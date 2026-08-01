@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Why InAmigos Foundation Assigned the AI Website Generation Task</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* CSS RESET & PDF PRINT SETTINGS */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #05070B;
+      color: #E5E7EB;
+      font-family: 'Inter', sans-serif;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    @page {
+      size: A4;
+      margin: 0;
+    }
+    
+    /* PAGE WRAPPERS */
+    .page {
+      width: 210mm;
+      height: 297mm;
+      page-break-after: always;
+      position: relative;
+      box-sizing: border-box;
+      padding: 28mm 22mm 24mm 22mm;
+      background-color: #05070B;
+      overflow: hidden;
+    }
+    
+    /* Decorative page background glows */
+    .page::before {
+      content: '';
+      position: absolute;
+      top: -10%;
+      left: -10%;
+      width: 60%;
+      height: 60%;
+      background: radial-gradient(circle, rgba(0, 245, 255, 0.03) 0%, transparent 70%);
+      z-index: 1;
+      pointer-events: none;
+    }
+    .page::after {
+      content: '';
+      position: absolute;
+      bottom: -10%;
+      right: -10%;
+      width: 60%;
+      height: 60%;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.03) 0%, transparent 70%);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .grid-overlay {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+      background-size: 30px 30px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* HEADER & FOOTER */
+    .page-header {
+      position: absolute;
+      top: 12mm;
+      left: 22mm;
+      right: 22mm;
+      height: 10mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 8pt;
+      color: #9CA3AF;
+      font-family: 'Outfit', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      z-index: 10;
+    }
+    .page-header .brand {
+      font-weight: 800;
+      color: #FFF;
+    }
+    .page-header .brand span {
+      background: linear-gradient(90deg, #10B981, #00F5FF);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .page-footer {
+      position: absolute;
+      bottom: 12mm;
+      left: 22mm;
+      right: 22mm;
+      height: 10mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 8pt;
+      color: #9CA3AF;
+      font-family: 'Outfit', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      z-index: 10;
+    }
+
+    /* TYPOGRAPHY */
+    h1, h2, h3, h4, h5 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      color: #FFFFFF;
+    }
+    h2 {
+      font-size: 24pt;
+      margin-bottom: 10mm;
+      letter-spacing: -0.02em;
+      position: relative;
+      display: inline-block;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #FFFFFF, #D1D5DB);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      z-index: 5;
+    }
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: -3mm;
+      left: 0;
+      width: 30mm;
+      height: 2px;
+      background: linear-gradient(90deg, #00F5FF, #10B981);
+    }
+    h3 {
+      font-size: 13pt;
+      color: #00F5FF;
+      margin-bottom: 3.5mm;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    p {
+      font-size: 10pt;
+      line-height: 1.7;
+      color: #D1D5DB;
+      margin-bottom: 5mm;
+      text-align: justify;
+      z-index: 5;
+    }
+    .content-area {
+      position: relative;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      z-index: 5;
+    }
+
+    /* GLASSMORPHISM CARD DESIGN */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 12px;
+      padding: 6mm;
+      margin-bottom: 5mm;
+      backdrop-filter: blur(8px);
+      z-index: 5;
+    }
+    .glass-card.accent-cyan {
+      border-left: 3px solid #00F5FF;
+    }
+    .glass-card.accent-emerald {
+      border-left: 3px solid #10B981;
+    }
+
+    /* GRID LAYOUTS */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5mm;
+      margin-bottom: 5mm;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 4mm;
+      margin-bottom: 5mm;
+    }
+
+    /* METRIC PILLS & BADGES */
+    .metric-number {
+      font-size: 22pt;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      background: linear-gradient(135deg, #00F5FF, #10B981);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1.5mm;
+    }
+    .metric-label {
+      font-size: 8pt;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      color: #9CA3AF;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* ACCENTS & HIGHLIGHTS */
+    .highlight-cyan { color: #00F5FF; font-weight: 600; }
+    .highlight-emerald { color: #10B981; font-weight: 600; }
+    
+    /* TECH BADGES */
+    .tech-pill {
+      display: inline-block;
+      padding: 1mm 2.5mm;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 4px;
+      font-size: 7.5pt;
+      font-family: 'Fira Code', monospace;
+      color: #9CA3AF;
+      margin-right: 1.5mm;
+      margin-bottom: 1.5mm;
+    }
+
+    /* LISTS */
+    ul {
+      margin-left: 5mm;
+      margin-bottom: 5mm;
+      z-index: 5;
+    }
+    li {
+      font-size: 9.5pt;
+      line-height: 1.6;
+      color: #D1D5DB;
+      margin-bottom: 2mm;
+    }
+    
+    /* SCREENSHOT PLACEHOLDERS */
+    .screenshot-placeholder {
+      width: 100%;
+      height: 52mm;
+      background: linear-gradient(135deg, rgba(3, 7, 18, 0.7), rgba(17, 24, 39, 0.9));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top: 5mm;
+      margin-bottom: 5mm;
+      position: relative;
+      overflow: hidden;
+      z-index: 5;
+    }
+    .screenshot-placeholder::before {
+      content: '';
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.06), transparent 70%);
+      top: -20px;
+      right: -20px;
+    }
+    .screenshot-placeholder-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 11pt;
+      font-weight: 700;
+      color: #9CA3AF;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 2mm;
+    }
+    .screenshot-placeholder-desc {
+      font-size: 8pt;
+      color: #6B7280;
+      font-family: 'Fira Code', monospace;
+    }
+    
+    /* QR CODE PAGE CARDS */
+    .qr-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 16px;
+      padding: 8mm;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+    .qr-box {
+      width: 42mm;
+      height: 42mm;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 3mm;
+      margin-bottom: 4mm;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .qr-box svg {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= PAGE 1: COVER PAGE ================= -->
+  <div class="page" style="padding: 0; background: radial-gradient(circle at center, #0B0E17 0%, #05070B 100%);">
+    <div class="grid-overlay"></div>
+    <div style="position: absolute; top: 18%; left: 0; width: 100%; text-align: center; display: flex; flex-direction: column; align-items: center; z-index: 10; padding: 0 20mm;">
+      
+      <!-- Foundation Header Label -->
+      <div style="padding: 1.5mm 4.5mm; background: rgba(0, 245, 255, 0.1); border: 1px solid rgba(0, 245, 255, 0.3); border-radius: 100px; font-family: 'Outfit', sans-serif; font-size: 8.5pt; font-weight: 800; color: #00F5FF; letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 8mm; box-shadow: 0 0 15px rgba(0, 245, 255, 0.15);">
+        InAmigos Foundation &bull; Educational Vision Document
+      </div>
+      
+      <!-- Document Title -->
+      <h1 style="font-size: 26pt; font-weight: 900; color: #FFFFFF; font-family: 'Outfit', sans-serif; line-height: 1.35; letter-spacing: -0.01em; margin-bottom: 4mm; max-width: 155mm; text-transform: uppercase;">
+        Why InAmigos Foundation Assigned the <span style="background: linear-gradient(90deg, #10B981, #00F5FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">AI Website Generation</span> Task
+      </h1>
+      
+      <!-- Subtitle -->
+      <div style="font-family: 'Outfit', sans-serif; font-size: 11pt; font-weight: 500; color: #9CA3AF; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 10mm; max-width: 140mm; line-height: 1.5;">
+        Understanding the Educational Vision Behind the Internship
+      </div>
+
+      <!-- Tech separator -->
+      <div style="display: flex; align-items: center; gap: 3mm; margin-bottom: 10mm;">
+        <div style="width: 10mm; height: 1px; background: rgba(255,255,255,0.2);"></div>
+        <div style="width: 3mm; height: 3mm; border: 1px solid #10B981; transform: rotate(45deg);"></div>
+        <div style="width: 10mm; height: 1px; background: rgba(255,255,255,0.2);"></div>
+      </div>
+    </div>
+
+    <!-- Central Glowing Geometric Lines / Abstract Illustration -->
+    <div style="position: absolute; bottom: 20%; left: 50%; transform: translateX(-50%); width: 80mm; height: 80mm; z-index: 5; display: flex; justify-content: center; align-items: center;">
+      <div style="position: absolute; width: 75mm; height: 75mm; border-radius: 50%; background: radial-gradient(circle, rgba(16, 185, 129, 0.06) 0%, transparent 70%); filter: blur(10px);"></div>
+      
+      <!-- Nested geometric squares for modern tech styling -->
+      <div style="position: absolute; width: 45mm; height: 45mm; border: 1px solid rgba(0, 245, 255, 0.25); transform: rotate(15deg); box-shadow: 0 0 20px rgba(0, 245, 255, 0.08);"></div>
+      <div style="position: absolute; width: 45mm; height: 45mm; border: 1px solid rgba(16, 185, 129, 0.25); transform: rotate(60deg);"></div>
+      <div style="position: absolute; width: 45mm; height: 45mm; border: 1px dashed rgba(255, 255, 255, 0.15); transform: rotate(105deg);"></div>
+      
+      <!-- Core target dot -->
+      <div style="width: 12mm; height: 12mm; border-radius: 50%; background: radial-gradient(circle, #00F5FF 0%, #10B981 80%); filter: blur(1px); opacity: 0.75; box-shadow: 0 0 25px rgba(16, 185, 129, 0.5);"></div>
+    </div>
+
+    <!-- Metadata Footer -->
+    <div style="position: absolute; bottom: 8%; left: 0; width: 100%; display: flex; justify-content: space-between; padding: 0 22mm; z-index: 10; font-family: 'Outfit', sans-serif;">
+      <div style="text-align: left;">
+        <span style="font-size: 7.5pt; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: 0.12em; display: block; margin-bottom: 1.5mm;">Prepared By</span>
+        <span style="font-size: 11.5pt; font-weight: 800; color: #FFF; letter-spacing: 0.02em;">DEEPESH M</span>
+        <span style="font-size: 8.5pt; color: #9CA3AF; display: block; margin-top: 1px;">Software Engineering Intern</span>
+      </div>
+      <div style="text-align: right;">
+        <span style="font-size: 7.5pt; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: 0.12em; display: block; margin-bottom: 1.5mm;">Platform Case Study</span>
+        <span style="font-size: 11.5pt; font-weight: 800; color: #10B981; letter-spacing: 0.05em; display: block;">SECONDLIFE</span>
+        <span style="font-size: 8.5pt; color: #9CA3AF; display: block; margin-top: 1px;">AI Circular Economy Platform</span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 2: EXECUTIVE SUMMARY ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>01 / Executive Summary</div>
+    </div>
+
+    <div class="content-area">
+      <h2>Executive Summary</h2>
+      
+      <p style="font-size: 10.5pt; margin-bottom: 6mm; line-height: 1.75;">
+        As artificial intelligence reshapes the tech landscape, the role of a software engineer is shifting from manual coding to system design and collaboration with AI. Recognizing this change, the **InAmigos Foundation** structured the website generation assignment to give students direct experience with this new way of working.
+      </p>
+
+      <div class="glass-card accent-cyan" style="margin-bottom: 6mm; padding: 7mm;">
+        <h3>Practical Application Over Theory</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          Instead of just studying theory, interns are tasked with using AI to plan, design, and deploy a web application. This practical approach requires students to think about system requirements, user needs, and deployment logistics, preparing them for the demands of the modern tech industry.
+        </p>
+      </div>
+
+      <div class="glass-card accent-emerald" style="margin-bottom: 6mm; padding: 7mm;">
+        <h3>AI-Assisted Web Development</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          Learning to collaborate with AI tools is becoming a key skill for developers. By using AI to design layouts, generate assets, and structure code, interns learn how to build and validate ideas quickly, improving both their development speed and resourcefulness.
+        </p>
+      </div>
+
+      <p style="font-size: 10pt; line-height: 1.7;">
+        This document details the educational objectives of the assignment and shows how **SecondLife**, an AI-powered circular economy platform, was developed to meet these learning goals while building a useful, community-focused tool.
+      </p>
+
+    </div>
+
+    <div class="page-footer">
+      <div>Educational Vision Document</div>
+      <div>Page 01</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 3: OBJECTIVES OF THE TASK ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>02 / Task Objectives</div>
+    </div>
+
+    <div class="content-area">
+      <h2>Task Objectives</h2>
+      
+      <p style="margin-bottom: 5mm;">
+        The website generation task is structured around key learning goals designed to help interns grow technically and creatively:
+      </p>
+
+      <div class="grid-2">
+        <div class="glass-card accent-cyan" style="margin-bottom: 0;">
+          <h3 style="font-size: 11pt; margin-bottom: 1.5mm; color: #FFF;">AI-Assisted Engineering</h3>
+          <p style="font-size: 9pt; margin-bottom: 0; line-height: 1.5;">
+            Learn to use AI code helpers to design interfaces, write backend logic, and deploy code quickly.
+          </p>
+        </div>
+
+        <div class="glass-card accent-emerald" style="margin-bottom: 0;">
+          <h3 style="font-size: 11pt; margin-bottom: 1.5mm; color: #FFF;">Improve Creative Thinking</h3>
+          <p style="font-size: 9pt; margin-bottom: 0; line-height: 1.5;">
+            Solve complex problems by designing unique layouts and interactions that make web pages feel engaging.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="glass-card accent-emerald" style="margin-bottom: 0;">
+          <h3 style="font-size: 11pt; margin-bottom: 1.5mm; color: #FFF;">UI/UX Design Practices</h3>
+          <p style="font-size: 9pt; margin-bottom: 0; line-height: 1.5;">
+            Learn about layout typography, color theory, and responsive grid design to build easy-to-use interfaces.
+          </p>
+        </div>
+
+        <div class="glass-card accent-cyan" style="margin-bottom: 0;">
+          <h3 style="font-size: 11pt; margin-bottom: 1.5mm; color: #FFF;">Website Architecture</h3>
+          <p style="font-size: 9pt; margin-bottom: 0; line-height: 1.5;">
+            Practice structuring assets, setting up folders, and managing component dependencies systematically.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom: 4mm;">
+        <div class="glass-card accent-cyan" style="margin-bottom: 0;">
+          <h3 style="font-size: 11pt; margin-bottom: 1.5mm; color: #FFF;">Modern Git Workflows</h3>
+          <p style="font-size: 9pt; margin-bottom: 0; line-height: 1.5;">
+            Build confidence deploying applications to production hosts like Vercel and managing code using GitHub.
+          </p>
+        </div>
+
+        <div class="glass-card accent-emerald" style="margin-bottom: 0;">
+          <h3 style="font-size: 11pt; margin-bottom: 1.5mm; color: #FFF;">Portfolio Projects</h3>
+          <p style="font-size: 9pt; margin-bottom: 0; line-height: 1.5;">
+            Develop high-quality, fully functional projects to showcase technical skills to future employers.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="page-footer">
+      <div>Educational Vision Document</div>
+      <div>Page 02</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 4: WHY WEBSITE GENERATION MATTERS ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>03 / Why Web Matters</div>
+    </div>
+
+    <div class="content-area">
+      <h2>Why Web Generation Matters</h2>
+      
+      <p style="font-size: 10.5pt; margin-bottom: 5mm; line-height: 1.7;">
+        A website serves as an organization's digital identity. Every business, NGO, and creative needs a clear web presence to reach their audience and share their message:
+      </p>
+
+      <div class="glass-card accent-cyan" style="margin-bottom: 5mm;">
+        <h3>Rapid Idea Prototyping</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          Using AI to generate web layouts speeds up prototype development. This allows teams to validate ideas, gather user feedback, and test models in hours rather than weeks, making it easier to refine product direction early.
+        </p>
+      </div>
+
+      <div class="glass-card accent-emerald" style="margin-bottom: 5mm;">
+        <h3>Combining Tech & Communication</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          Building websites teaches developers how to balance technical code with visual layouts and user copy. This helps engineers learn how to communicate technical concepts clearly to non-technical users.
+        </p>
+      </div>
+
+      <div class="glass-card" style="margin-bottom: 5mm;">
+        <h3>Improving Global Accessibility</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          Understanding modern web standards ensures pages load quickly, run smoothly on mobile devices, and remain accessible to all users, regardless of their location or hardware.
+        </p>
+      </div>
+
+      <p style="font-size: 9.5pt; line-height: 1.6;">
+        By teaching these web development fundamentals, the assignment prepares students to build clean, functional, and accessible digital products.
+      </p>
+
+    </div>
+
+    <div class="page-footer">
+      <div>Educational Vision Document</div>
+      <div>Page 03</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 5: WHY AI WAS INCLUDED ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>04 / Why AI Was Included</div>
+    </div>
+
+    <div class="content-area">
+      <h2>Why AI Was Included</h2>
+      
+      <p style="font-size: 10.5pt; margin-bottom: 6mm; line-height: 1.7;">
+        Rather than bypassing manual development, using artificial intelligence in this assignment helps developers build more complex, interactive platforms more efficiently:
+      </p>
+
+      <div class="glass-card accent-emerald" style="margin-bottom: 5mm;">
+        <h3>Productivity & Fast Prototyping</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          AI assistants handle repetitive tasks like writing CSS utility classes or setting up boilerplate files. This saves developers time, letting them focus on key features like custom audio synthesis or complex state routers.
+        </p>
+      </div>
+
+      <div class="glass-card accent-cyan" style="margin-bottom: 5mm;">
+        <h3>Encouraging Innovation</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          With AI assistance, developers can experiment with advanced web features—like WebGL particles or custom audio APIs—that they might have avoided due to steep learning curves, encouraging more creative solutions.
+        </p>
+      </div>
+
+      <div class="glass-card" style="margin-bottom: 5mm;">
+        <h3>Collaboration as a Key Skill</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          Knowing how to work with AI models (e.g., using effective prompts and debugging code output) is becoming a core skill. This assignment helps students learn how to use AI to solve technical challenges.
+        </p>
+      </div>
+
+      <p style="font-size: 9.5pt; line-height: 1.6;">
+        AI changes the developer's role from writing simple code to managing complex systems, prompting students to think like product engineers.
+      </p>
+
+    </div>
+
+    <div class="page-footer">
+      <div>Educational Vision Document</div>
+      <div>Page 04</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 6: HOW MY PROJECT ALIGNS WITH THIS VISION ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>05 / Project Alignment</div>
+    </div>
+
+    <div class="content-area">
+      <h2>How SecondLife Aligns</h2>
+      
+      <p style="margin-bottom: 5mm;">
+        Instead of building a simple portfolio, I developed **SecondLife**—an AI-driven circular economy platform designed to address solid waste and support community donation logistics.
+      </p>
+
+      <div class="glass-card accent-cyan" style="margin-bottom: 5mm; padding: 5mm 6mm;">
+        <h3>AI-Driven Circularity</h3>
+        <p style="font-size: 9pt; margin-bottom: 0; line-height: 1.6;">
+          The platform uses computer vision to sort items into four sustainability paths: **Repair** (via local technicians), **Donation** (to verified NGOs), **Recycling** (to local centers), or **Resale** (to reuse markets).
+        </p>
+      </div>
+
+      <div class="glass-card accent-emerald" style="margin-bottom: 5mm; padding: 5mm 6mm;">
+        <h3>Practical Social Good</h3>
+        <p style="font-size: 9pt; margin-bottom: 0; line-height: 1.6;">
+          SecondLife connects users directly with local charities and repair shops, using digital dashboards to show how individual recycling choices reduce landfill waste and carbon emissions.
+        </p>
+      </div>
+
+      <div class="glass-card" style="margin-bottom: 5mm; padding: 5mm 6mm;">
+        <h3>Immersive User Experience</h3>
+        <p style="font-size: 9pt; margin-bottom: 0; line-height: 1.6;">
+          By combining Three.js 3D globes, custom cursor movements, and Web Audio API sound cues, the site makes ecological action feel rewarding and engaging.
+        </p>
+      </div>
+
+      <div class="screenshot-placeholder" style="height: 38mm; margin-top: 0; margin-bottom: 0;">
+        <span class="screenshot-placeholder-title">SecondLife Application Dashboard</span>
+        <span class="screenshot-placeholder-desc">[ 3D WebGL Globe ] &bull; [ AI Scanning Portal ] &bull; [ ESG Calculator ]</span>
+      </div>
+
+    </div>
+
+    <div class="page-footer">
+      <div>Educational Vision Document</div>
+      <div>Page 05</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 7: SKILLS DEMONSTRATED ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>06 / Skills Demonstrated</div>
+    </div>
+
+    <div class="content-area">
+      <h2>Skills Demonstrated</h2>
+      
+      <p style="margin-bottom: 5mm;">
+        Developing SecondLife required applying a variety of technical and creative skills:
+      </p>
+
+      <div class="grid-2">
+        <div class="glass-card accent-cyan" style="margin-bottom: 0; padding: 5mm;">
+          <h3 style="font-size: 11pt; color: #FFF; margin-bottom: 2mm;">Frontend & 3D Web</h3>
+          <p style="font-size: 9pt; margin-bottom: 2mm; line-height: 1.5;">
+            Built responsive, state-managed layouts using Next.js, and integrated Three.js particle systems for visual globes.
+          </p>
+          <span class="tech-pill">Next.js 16</span>
+          <span class="tech-pill">Three.js</span>
+          <span class="tech-pill">R3F</span>
+        </div>
+
+        <div class="glass-card accent-emerald" style="margin-bottom: 0; padding: 5mm;">
+          <h3 style="font-size: 11pt; color: #FFF; margin-bottom: 2mm;">Audio Synthesis</h3>
+          <p style="font-size: 9pt; margin-bottom: 2mm; line-height: 1.5;">
+            Programmed synthesized sound effects using W3C Web Audio APIs, creating click and hover cues client-side.
+          </p>
+          <span class="tech-pill">Web Audio API</span>
+          <span class="tech-pill">LFO Modulation</span>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="glass-card accent-emerald" style="margin-bottom: 0; padding: 5mm;">
+          <h3 style="font-size: 11pt; color: #FFF; margin-bottom: 2mm;">AI Collaboration</h3>
+          <p style="font-size: 9pt; margin-bottom: 2mm; line-height: 1.5;">
+            Used AI coding assistants to speed up interface design, write styling classes, and debug code errors.
+          </p>
+          <span class="tech-pill">Prompt Engineering</span>
+          <span class="tech-pill">IDE Copilot</span>
+        </div>
+
+        <div class="glass-card accent-cyan" style="margin-bottom: 0; padding: 5mm;">
+          <h3 style="font-size: 11pt; color: #FFF; margin-bottom: 2mm;">Git & Deployment</h3>
+          <p style="font-size: 9pt; margin-bottom: 2mm; line-height: 1.5;">
+            Managed code updates using Git, and set up continuous integration pipelines to deploy the site to Vercel.
+          </p>
+          <span class="tech-pill">GitHub</span>
+          <span class="tech-pill">Vercel CI/CD</span>
+        </div>
+      </div>
+
+      <div class="glass-card" style="margin-top: 5mm; padding: 4.5mm 6mm; margin-bottom: 0;">
+        <h3 style="font-size: 11pt; color: #FFF; margin-bottom: 1.5mm;">Design Thinking & UX</h3>
+        <p style="font-size: 9pt; margin-bottom: 0; line-height: 1.5;">
+          Created unified glassmorphic card grids, responsive columns, and micro-interactions to deliver a polished, accessible interface.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="page-footer">
+      <div>Educational Vision Document</div>
+      <div>Page 06</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 8: LEARNING OUTCOMES ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>07 / Learning Outcomes</div>
+    </div>
+
+    <div class="content-area">
+      <h2>Learning Outcomes</h2>
+      
+      <p style="margin-bottom: 5mm;">
+        The internship provided valuable experience in managing software development, user interface design, and product documentation:
+      </p>
+
+      <div class="glass-card accent-cyan" style="margin-bottom: 5mm;">
+        <h3>1. Practical AI Collaboration</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          Learned how to collaborate with AI coding helpers, evaluate output code quality, and integrate AI assistance with manual coding tasks to build features more efficiently.
+        </p>
+      </div>
+
+      <div class="glass-card accent-emerald" style="margin-bottom: 5mm;">
+        <h3>2. Design Thinking and Prototyping</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          Developed wireframes, designed responsive layouts, and structured components to turn a high-level idea into a functional platform for sustainable resource management.
+        </p>
+      </div>
+
+      <div class="glass-card" style="margin-bottom: 5mm;">
+        <h3>3. Professional Communication and Documentation</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          Practiced explaining technical designs and architecture flows through clear project reports, preparing me to work with design teams and product managers.
+        </p>
+      </div>
+
+      <p>
+        These lessons helped bridge the gap between classroom theory and the skills needed to design, develop, and document real-world software products.
+      </p>
+
+    </div>
+
+    <div class="page-footer">
+      <div>Educational Vision Document</div>
+      <div>Page 07</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 9: FUTURE VISION & FINAL REFLECTION ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>08 / Future Vision</div>
+    </div>
+
+    <div class="content-area" style="justify-content: space-between; height: calc(100% - 15mm);">
+      <div>
+        <h2>Future Vision & Reflection</h2>
+        
+        <p style="margin-bottom: 5mm;">
+          SecondLife provides a starting point for a scalable circular economy platform. Future versions could integrate several advanced technologies:
+        </p>
+
+        <div class="glass-card accent-cyan" style="padding: 5mm; margin-bottom: 4mm;">
+          <h3 style="font-size: 11pt; color: #FFF; margin-bottom: 1.5mm;">Computer Vision & Local Networks</h3>
+          <p style="font-size: 9pt; margin-bottom: 0; color: #9CA3AF; line-height: 1.5;">
+            Integrating active machine learning models will allow the platform to identify materials and wears automatically, while expanding the partner network will coordinate pickups and recycling logistics across regions.
+          </p>
+        </div>
+
+        <div class="glass-card accent-emerald" style="padding: 5mm; margin-bottom: 5mm;">
+          <h3 style="font-size: 11pt; color: #FFF; margin-bottom: 1.5mm;">IoT Bins & Eco-Rewards</h3>
+          <p style="font-size: 9pt; margin-bottom: 0; color: #9CA3AF; line-height: 1.5;">
+            Integrating smart disposal bins will verify item deposits automatically, allowing users to track their environmental impact and earn eco-points for circular choices.
+          </p>
+        </div>
+        
+        <p style="font-size: 9.5pt; line-height: 1.65; margin-bottom: 6mm;">
+          Ultimately, this task shows that web development is about more than writing code—it is an opportunity to design solutions for real-world environmental and social challenges.
+        </p>
+      </div>
+
+      <!-- Centered Inspiring Quote -->
+      <div style="text-align: center; padding: 8mm 6mm; background: rgba(255,255,255,0.01); border-top: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 8mm; z-index: 10;">
+        <p style="font-family: 'Outfit', sans-serif; font-size: 14pt; font-weight: 300; font-style: italic; color: #00F5FF; text-align: center; line-height: 1.6; margin-bottom: 0; text-shadow: 0 0 15px rgba(0, 245, 255, 0.15);">
+          "Technology creates its greatest value when it improves lives and protects our future."
+        </p>
+      </div>
+
+    </div>
+
+    <div class="page-footer">
+      <div>Educational Vision Document</div>
+      <div>Page 08</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 10: THANK YOU (LAST PAGE) ================= -->
+  <div class="page" style="background: radial-gradient(circle at center, #0B0E17 0%, #05070B 100%);">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>09 / Final Access</div>
+    </div>
+
+    <div class="content-area" style="justify-content: space-between; height: calc(100% - 15mm); padding-top: 5mm;">
+      
+      <div style="text-align: center; margin-top: 10mm;">
+        <h1 style="font-size: 32pt; font-weight: 900; color: #FFFFFF; font-family: 'Outfit', sans-serif; letter-spacing: 0.05em; margin-bottom: 4mm;">
+          THANK YOU
+        </h1>
+        <p style="font-size: 11pt; color: #9CA3AF; max-width: 120mm; margin: 0 auto 8mm auto; line-height: 1.7; text-align: center;">
+          I appreciate the opportunity to work on this assignment. Building this project helped me develop practical web development skills and design a functional platform for sustainable circular habits.
+        </p>
+        <div style="width: 15mm; height: 2px; background: linear-gradient(90deg, #10B981, #00F5FF); margin: 0 auto;"></div>
+      </div>
+
+      <!-- QR Cards Grid -->
+      <div class="grid-2" style="margin-bottom: 8mm;">
+        <!-- GitHub QR Card -->
+        <div class="qr-card">
+          <h3 style="font-size: 11pt; color: #00F5FF; margin-bottom: 3.5mm;">GitHub Codebase</h3>
+          <div class="qr-box" id="github-vision-qr-placeholder">
+            <!-- Inject GitHub SVG QR Code -->
+          </div>
+          <p style="font-size: 8pt; margin-bottom: 0; color: #9CA3AF; font-family: 'Fira Code', monospace; word-break: break-all;">
+            melvindeepesh-boop/SECOND-LIFE
+          </p>
+        </div>
+
+        <!-- Live Website QR Card -->
+        <div class="qr-card">
+          <h3 style="font-size: 11pt; color: #10B981; margin-bottom: 3.5mm;">Live Application</h3>
+          <div class="qr-box" id="website-vision-qr-placeholder">
+            <!-- Inject Website SVG QR Code -->
+          </div>
+          <p style="font-size: 8pt; margin-bottom: 0; color: #9CA3AF; font-family: 'Fira Code', monospace; word-break: break-all;">
+            second-kohl-ten.vercel.app
+          </p>
+        </div>
+      </div>
+
+      <!-- Metadata at the bottom of thank you page -->
+      <div style="display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 5mm; font-family: 'Outfit', sans-serif; font-size: 8.5pt; color: #6B7280; text-transform: uppercase; letter-spacing: 0.15em;">
+        <div>Prepared By: Deepesh M</div>
+        <div>Project: SecondLife Platform</div>
+        <div>Role: Software Intern</div>
+      </div>
+
+    </div>
+
+    <div class="page-footer">
+      <div>Educational Vision Document</div>
+      <div>Page 09</div>
+    </div>
+  </div>
+
+</body>
+</html>

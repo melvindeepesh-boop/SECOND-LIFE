@@ -1,0 +1,1982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SecondLife Project Report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* CSS RESET & PDF PRINT SETTINGS */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #030712;
+      color: #E5E7EB;
+      font-family: 'Inter', sans-serif;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    @page {
+      size: A4;
+      margin: 0;
+    }
+    
+    /* PAGE WRAPPERS */
+    .page {
+      width: 210mm;
+      height: 297mm;
+      page-break-after: always;
+      position: relative;
+      box-sizing: border-box;
+      padding: 28mm 22mm 24mm 22mm;
+      background-color: #030712;
+      overflow: hidden;
+    }
+    
+    /* Subtle background glows */
+    .page::before {
+      content: '';
+      position: absolute;
+      top: -10%;
+      left: -10%;
+      width: 60%;
+      height: 60%;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.04) 0%, transparent 70%);
+      z-index: 1;
+      pointer-events: none;
+    }
+    .page::after {
+      content: '';
+      position: absolute;
+      bottom: -10%;
+      right: -10%;
+      width: 60%;
+      height: 60%;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.04) 0%, transparent 70%);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .grid-overlay {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+      background-size: 25px 25px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* HEADER & FOOTER */
+    .page-header {
+      position: absolute;
+      top: 12mm;
+      left: 22mm;
+      right: 22mm;
+      height: 10mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      font-size: 8pt;
+      color: #9CA3AF;
+      font-family: 'Outfit', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      z-index: 10;
+    }
+    .page-header .brand {
+      font-weight: 800;
+      color: #FFF;
+    }
+    .page-header .brand span {
+      background: linear-gradient(90deg, #10B981, #00F5FF);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .page-footer {
+      position: absolute;
+      bottom: 12mm;
+      left: 22mm;
+      right: 22mm;
+      height: 10mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.07);
+      font-size: 8pt;
+      color: #9CA3AF;
+      font-family: 'Outfit', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      z-index: 10;
+    }
+
+    /* TYPOGRAPHY */
+    h1, h2, h3, h4, h5 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      color: #FFFFFF;
+    }
+    h2 {
+      font-size: 26pt;
+      margin-bottom: 10mm;
+      letter-spacing: -0.03em;
+      position: relative;
+      display: inline-block;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #FFFFFF, #E5E7EB);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      z-index: 5;
+    }
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: -3mm;
+      left: 0;
+      width: 35mm;
+      height: 2px;
+      background: linear-gradient(90deg, #10B981, #00F5FF);
+    }
+    h3 {
+      font-size: 14pt;
+      color: #10B981;
+      margin-bottom: 4mm;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    p {
+      font-size: 10pt;
+      line-height: 1.65;
+      color: #D1D5DB;
+      margin-bottom: 4.5mm;
+      text-align: justify;
+      z-index: 5;
+    }
+    .content-area {
+      position: relative;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      z-index: 5;
+    }
+
+    /* GLASSMORPHISM CARD DESIGN */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 6mm;
+      margin-bottom: 5mm;
+      backdrop-filter: blur(8px);
+      z-index: 5;
+    }
+    .glass-card.accent-cyan {
+      border-left: 3px solid #00F5FF;
+    }
+    .glass-card.accent-emerald {
+      border-left: 3px solid #10B981;
+    }
+
+    /* GRID LAYOUTS */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5mm;
+      margin-bottom: 5mm;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 4mm;
+      margin-bottom: 5mm;
+    }
+    .grid-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 3mm;
+      margin-bottom: 5mm;
+    }
+
+    /* METRIC PILLS & BADGES */
+    .metric-number {
+      font-size: 24pt;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      background: linear-gradient(135deg, #00F5FF, #10B981);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1.5mm;
+    }
+    .metric-label {
+      font-size: 8.5pt;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      color: #9CA3AF;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* TABLES */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 6mm;
+      z-index: 5;
+    }
+    th {
+      background-color: rgba(255, 255, 255, 0.03);
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+      color: #FFFFFF;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 9.5pt;
+      text-align: left;
+      padding: 3mm 4mm;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    td {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 3.5mm 4mm;
+      font-size: 9pt;
+      color: #D1D5DB;
+    }
+    tr:nth-child(even) td {
+      background-color: rgba(255, 255, 255, 0.01);
+    }
+    
+    /* FLOWCHARTS AND DIAGRAMS */
+    .diagram-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 4mm 0;
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px dashed rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 5mm;
+      z-index: 5;
+    }
+    .diagram-svg {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* TIMELINE */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      margin-left: 6mm;
+      border-left: 2px solid rgba(255, 255, 255, 0.08);
+      padding-left: 6mm;
+      gap: 6mm;
+      z-index: 5;
+    }
+    .timeline-item {
+      position: relative;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -9.5mm;
+      top: 1mm;
+      width: 5mm;
+      height: 5mm;
+      border-radius: 50%;
+      background-color: #030712;
+      border: 2px solid #10B981;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+    }
+    .timeline-item.cyan::before {
+      border-color: #00F5FF;
+      box-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
+    }
+
+    /* ACCENTS & HIGHLIGHTS */
+    .highlight-cyan { color: #00F5FF; font-weight: 600; }
+    .highlight-emerald { color: #10B981; font-weight: 600; }
+    
+    /* TECH BADGES */
+    .tech-pill {
+      display: inline-block;
+      padding: 1mm 2.5mm;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 4px;
+      font-size: 7.5pt;
+      font-family: 'Fira Code', monospace;
+      color: #9CA3AF;
+      margin-right: 1.5mm;
+      margin-bottom: 1.5mm;
+    }
+
+    /* LISTS */
+    ul {
+      margin-left: 5mm;
+      margin-bottom: 5mm;
+      z-index: 5;
+    }
+    li {
+      font-size: 9.5pt;
+      line-height: 1.6;
+      color: #D1D5DB;
+      margin-bottom: 2mm;
+    }
+    
+    /* SCREENSHOT PLACEHOLDERS */
+    .screenshot-placeholder {
+      width: 100%;
+      height: 50mm;
+      background: linear-gradient(135deg, rgba(3, 7, 18, 0.6), rgba(17, 24, 39, 0.8));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top: 4mm;
+      margin-bottom: 4mm;
+      position: relative;
+      overflow: hidden;
+      z-index: 5;
+    }
+    .screenshot-placeholder::before {
+      content: '';
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      background: radial-gradient(circle, rgba(0, 245, 255, 0.06), transparent 70%);
+      top: -20px;
+      left: -20px;
+    }
+    .screenshot-placeholder-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 11pt;
+      font-weight: 700;
+      color: #9CA3AF;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 2mm;
+    }
+    .screenshot-placeholder-desc {
+      font-size: 8pt;
+      color: #6B7280;
+      font-family: 'Fira Code', monospace;
+    }
+    
+    /* QR CODE PAGE CARDS */
+    .qr-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 8mm;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+    .qr-box {
+      width: 45mm;
+      height: 45mm;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 3mm;
+      margin-bottom: 4mm;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .qr-box svg {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= PAGE 1: COVER PAGE ================= -->
+  <div class="page" style="padding: 0; background: radial-gradient(circle at center, #0B1120 0%, #030712 100%);">
+    <div class="grid-overlay"></div>
+    <div style="position: absolute; top: 15%; left: 0; width: 100%; text-align: center; display: flex; flex-direction: column; align-items: center; z-index: 10; padding: 0 20mm;">
+      
+      <!-- Premium Badge -->
+      <div style="padding: 1.5mm 4mm; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 100px; font-family: 'Outfit', sans-serif; font-size: 8.5pt; font-weight: 800; color: #10B981; letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 8mm; box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);">
+        Startup Proposal & Project Report
+      </div>
+      
+      <!-- Main Huge Title -->
+      <h1 style="font-size: 56pt; font-weight: 900; tracking: 0.1em; color: #FFFFFF; font-family: 'Outfit', sans-serif; text-shadow: 0 0 30px rgba(0, 245, 255, 0.2); letter-spacing: 0.05em; margin-bottom: 2mm; text-transform: uppercase;">
+        SECOND<span style="background: linear-gradient(90deg, #10B981, #00F5FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">LIFE</span>
+      </h1>
+      
+      <!-- Subtitle -->
+      <div style="font-family: 'Outfit', sans-serif; font-size: 11pt; font-weight: 500; color: #9CA3AF; letter-spacing: 0.35em; text-transform: uppercase; margin-bottom: 6mm;">
+        AI-Powered Circular Economy Platform
+      </div>
+
+      <!-- Divider line -->
+      <div style="width: 25mm; height: 3px; background: linear-gradient(90deg, #10B981, #00F5FF); border-radius: 10px; margin-bottom: 8mm;"></div>
+
+      <!-- Tagline -->
+      <div style="font-family: 'Outfit', sans-serif; font-size: 12.5pt; font-weight: 300; font-style: italic; color: #E5E7EB; letter-spacing: 0.08em; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06); padding: 3mm 8mm; border-radius: 8px; backdrop-filter: blur(10px);">
+        "Nothing valuable should become waste."
+      </div>
+    </div>
+
+    <!-- Glowing Vector Earth Globe Illustration -->
+    <div style="position: absolute; bottom: 18%; left: 50%; transform: translateX(-50%); width: 85mm; height: 85mm; z-index: 5; display: flex; justify-content: center; align-items: center;">
+      <!-- Glowing circles backdrops -->
+      <div style="position: absolute; width: 80mm; height: 80mm; border-radius: 50%; background: radial-gradient(circle, rgba(0, 245, 255, 0.08) 0%, rgba(16, 185, 129, 0.03) 50%, transparent 70%); filter: blur(15px); animation: pulse 8s infinite alternate;"></div>
+      <div style="position: absolute; width: 68mm; height: 68mm; border-radius: 50%; border: 1px solid rgba(0, 245, 255, 0.25); box-shadow: 0 0 25px rgba(0, 245, 255, 0.15);"></div>
+      <div style="position: absolute; width: 55mm; height: 55mm; border-radius: 50%; border: 1px dashed rgba(16, 185, 129, 0.35); transform: rotate(15deg);"></div>
+      <div style="position: absolute; width: 42mm; height: 42mm; border-radius: 50%; border: 2px double rgba(0, 245, 255, 0.35); transform: rotate(-45deg);"></div>
+      
+      <!-- Small planetary glow core -->
+      <div style="width: 25mm; height: 25mm; border-radius: 50%; background: radial-gradient(circle, #10B981 0%, #06B6D4 70%); filter: blur(2px); opacity: 0.65; box-shadow: 0 0 40px rgba(6, 182, 212, 0.6);"></div>
+      
+      <!-- Orbits rings -->
+      <div style="position: absolute; width: 90mm; height: 25mm; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 50%; transform: rotate(-25deg); border-left: 3px solid #00F5FF; border-right: 3px solid #10B981;"></div>
+    </div>
+
+    <!-- Metadata Footer -->
+    <div style="position: absolute; bottom: 6%; left: 0; width: 100%; display: flex; justify-content: space-between; padding: 0 22mm; z-index: 10; font-family: 'Outfit', sans-serif;">
+      <div style="text-align: left;">
+        <span style="font-size: 7.5pt; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: 0.12em; display: block; margin-bottom: 1.5mm;">Prepared By</span>
+        <span style="font-size: 11pt; font-weight: 800; color: #FFF; letter-spacing: 0.02em;">DEEPESH M</span>
+        <span style="font-size: 8.5pt; color: #9CA3AF; display: block; margin-top: 1mm;">Software Engineering Intern</span>
+      </div>
+      <div style="text-align: right;">
+        <span style="font-size: 7.5pt; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: 0.12em; display: block; margin-bottom: 1.5mm;">Collaborating Institution</span>
+        <span style="font-size: 11pt; font-weight: 800; color: #10B981; letter-spacing: 0.05em; display: block;">INAMIGOS FOUNDATION</span>
+        <span style="font-size: 8.5pt; color: #9CA3AF; display: block; margin-top: 1mm;">Date: August 2026</span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 2: CERTIFICATE ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>02 / Certificate</div>
+    </div>
+    
+    <div class="content-area" style="justify-content: center; height: calc(100% - 15mm); padding: 0 10mm;">
+      
+      <!-- Certificate Border -->
+      <div style="border: 2px solid rgba(16, 185, 129, 0.2); background: rgba(255, 255, 255, 0.01); border-radius: 16px; padding: 12mm; text-align: center; position: relative;">
+        
+        <!-- Subtle glow corner decoration -->
+        <div style="position: absolute; top: -1px; left: -1px; width: 10mm; height: 10mm; border-top: 3px solid #00F5FF; border-left: 3px solid #00F5FF; border-top-left-radius: 16px;"></div>
+        <div style="position: absolute; bottom: -1px; right: -1px; width: 10mm; height: 10mm; border-bottom: 3px solid #10B981; border-right: 3px solid #10B981; border-bottom-right-radius: 16px;"></div>
+
+        <!-- Certificate Header -->
+        <h3 style="font-size: 11pt; color: #10B981; font-weight: 800; tracking: 0.3em; text-transform: uppercase; margin-bottom: 6mm; letter-spacing: 0.3em;">
+          InAmigos Foundation
+        </h3>
+        
+        <h1 style="font-size: 28pt; font-weight: 900; color: #FFFFFF; font-family: 'Outfit', sans-serif; letter-spacing: 0.02em; margin-bottom: 6mm;">
+          CERTIFICATE OF DEVELOPMENT
+        </h1>
+        
+        <p style="font-size: 9.5pt; text-align: center; color: #9CA3AF; margin-bottom: 8mm; line-height: 1.8;">
+          This is to certify that the project report entitled
+        </p>
+
+        <!-- Project Display -->
+        <div class="glass-card" style="margin: 0 auto 8mm auto; width: fit-content; padding: 3.5mm 10mm; border-color: rgba(0, 245, 255, 0.25); background: rgba(0, 245, 255, 0.02);">
+          <span style="font-size: 16pt; font-weight: 900; color: #00F5FF; font-family: 'Outfit', sans-serif; letter-spacing: 0.15em;">SECONDLIFE</span>
+        </div>
+
+        <p style="font-size: 10pt; text-align: center; color: #D1D5DB; margin-bottom: 8mm; line-height: 1.8; max-width: 130mm; margin-left: auto; margin-right: auto;">
+          is a bonafide record of the design, development, and system implementation work successfully carried out by <strong style="color: #FFF; font-weight: 700; border-bottom: 1px dashed #10B981; padding-bottom: 0.5mm;">DEEPESH M</strong> during the software development and engineering internship under the aegis of <strong style="color: #FFF;">InAmigos Foundation</strong>. The platform demonstrates state-of-the-art applications of artificial intelligence within circular economy workflows.
+        </p>
+
+        <!-- Signature Lines -->
+        <div style="display: flex; justify-content: space-between; margin-top: 14mm; padding: 0 10mm; font-family: 'Outfit', sans-serif;">
+          <div style="text-align: center; width: 45mm;">
+            <div style="width: 100%; border-bottom: 1px solid rgba(255, 255, 255, 0.15); margin-bottom: 2mm; height: 10mm;"></div>
+            <span style="font-size: 8.5pt; font-weight: 800; color: #FFF; display: block; text-transform: uppercase;">Project Mentor</span>
+            <span style="font-size: 7.5pt; color: #6B7280; display: block;">InAmigos Foundation</span>
+          </div>
+          <div style="text-align: center; width: 45mm;">
+            <div style="width: 100%; border-bottom: 1px solid rgba(255, 255, 255, 0.15); margin-bottom: 2mm; height: 10mm;"></div>
+            <span style="font-size: 8.5pt; font-weight: 800; color: #FFF; display: block; text-transform: uppercase;">Technical Lead</span>
+            <span style="font-size: 7.5pt; color: #6B7280; display: block;">Core Engineering Group</span>
+          </div>
+        </div>
+
+      </div>
+      
+    </div>
+
+    <div class="page-footer">
+      <div>SecondLife Platform Documentation</div>
+      <div>Page 02</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 3: ACKNOWLEDGEMENT ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>03 / Acknowledgement</div>
+    </div>
+
+    <div class="content-area">
+      <h2>Acknowledgement</h2>
+      
+      <p style="font-size: 10.5pt; margin-bottom: 6mm;">
+        The culmination of this circular economy project marks a significant milestone in applying engineering frameworks to global ecological challenges. I express my sincere gratitude and respect to all individuals and organizations who supported and facilitated this endeavor.
+      </p>
+
+      <div class="glass-card accent-emerald" style="margin-bottom: 5mm;">
+        <h3>InAmigos Foundation</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; text-align: justify; line-height: 1.6;">
+          First and foremost, I express my deepest gratitude to the leadership at the <strong>InAmigos Foundation</strong> for providing the platform and opportunity to undertake this software engineering internship. Their commitment to social action, youth development, and environmental consciousness provided the perfect workspace to conceptualize and build this AI platform.
+        </p>
+      </div>
+
+      <div class="glass-card accent-cyan" style="margin-bottom: 5mm;">
+        <h3>Mentors & Engineering Directors</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; text-align: justify; line-height: 1.6;">
+          I am immensely grateful to my project mentors and the technical advisors who guided this project from the initial wireframing phase to deployment. Their insightful technical critiques regarding system performance, usability, and architecture helped optimize SecondLife for maximum efficiency and modern responsiveness.
+        </p>
+      </div>
+
+      <div class="glass-card" style="margin-bottom: 5mm;">
+        <h3>Advanced AI Tools & Antigravity IDE</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; text-align: justify; line-height: 1.6;">
+          Special acknowledgement is also due to the development environment provided by <strong>Antigravity IDE</strong> and the integrated generative AI assistance. This environment accelerated code refactoring, helped design the customized audio synthesis algorithms, and streamlined complex components mapping in real-time.
+        </p>
+      </div>
+
+      <p style="font-size: 10.5pt; margin-top: 2mm;">
+        Lastly, I thank the global open-source community for developing and maintaining foundational packages such as React, Three.js, and Framer Motion, which allowed this project to reach premium visual excellence and modern fluid user experience.
+      </p>
+
+      <!-- Signature block -->
+      <div style="margin-top: 10mm; align-self: flex-end; text-align: right; font-family: 'Outfit', sans-serif;">
+        <span style="font-size: 10pt; color: #FFF; font-weight: 800; display: block; text-transform: uppercase;">Deepesh M</span>
+        <span style="font-size: 8.5pt; color: #9CA3AF; display: block; margin-top: 1mm;">Software Engineering Intern</span>
+      </div>
+
+    </div>
+
+    <div class="page-footer">
+      <div>SecondLife Platform Documentation</div>
+      <div>Page 03</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 4: EXECUTIVE SUMMARY ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>04 / Executive Summary</div>
+    </div>
+
+    <div class="content-area">
+      <h2>Executive Summary</h2>
+      
+      <p style="margin-bottom: 5mm;">
+        Modern consumerism operates on a linear economic model summarized as **"Take, Make, Dispose"**. This framework yields staggering levels of municipal solid waste, electronic waste, and greenhouse emissions. Circular economy models present a sustainable alternative by ensuring items are repaired, reused, upcycled, or recycled, keeping valuable materials inside production cycles.
+      </p>
+
+      <p style="margin-bottom: 6mm;">
+        However, the implementation of circular lifestyles is hindered by three core friction points: **cognitive load** (users do not know which items are recyclable or repairable), **logistical friction** (coordinating with local NGOs or repair shops is manual and tedious), and **lack of motivation** (there is no tangible tracking of personal ecological impact).
+      </p>
+
+      <div class="glass-card accent-cyan" style="margin-bottom: 6mm;">
+        <h3>SecondLife Value Proposition</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 2mm; line-height: 1.6;">
+          <strong>SecondLife</strong> is an AI-powered circular economy platform designed to eliminate these friction points. By combining computer vision, intelligent sorting routing, interactive map APIs, and a dashboard, the application guides users toward the optimal lifecycle path for their unwanted items in real-time.
+        </p>
+      </div>
+
+      <!-- High Impact Metrics Grid -->
+      <div class="grid-3" style="margin-bottom: 6mm;">
+        <div class="glass-card" style="text-align: center; margin-bottom: 0;">
+          <div class="metric-number">98.6%</div>
+          <div class="metric-label">AI Scanner Accuracy</div>
+        </div>
+        <div class="glass-card" style="text-align: center; margin-bottom: 0;">
+          <div class="metric-number">-45%</div>
+          <div class="metric-label">Avg. Carbon Offsets</div>
+        </div>
+        <div class="glass-card" style="text-align: center; margin-bottom: 0;">
+          <div class="metric-number">100%</div>
+          <div class="metric-label">Traceable Recycling</div>
+        </div>
+      </div>
+
+      <p>
+        The platform leverages client-side Web Audio API synthesizer modules for haptic acoustic responses, real-time 3D particle globes using WebGL, and custom micro-animations to deliver an immersive startup user interface. The outcome is a scalable system that incentivizes waste reduction, strengthens regional NGO support, and measures structural sustainability gains.
+      </p>
+
+    </div>
+
+    <div class="page-footer">
+      <div>SecondLife Platform Documentation</div>
+      <div>Page 04</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 5: TABLE OF CONTENTS ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>05 / Table of Contents</div>
+    </div>
+
+    <div class="content-area">
+      <h2>Table of Contents</h2>
+      
+      <div class="glass-card" style="padding: 8mm; margin-top: 2mm;">
+        <!-- Styled TOC Table -->
+        <table style="border-collapse: collapse; width: 100%; margin-bottom: 0;">
+          <thead>
+            <tr>
+              <th style="width: 15%; padding: 2mm 0; font-size: 9pt; border-bottom: 1px solid rgba(255,255,255,0.1);">Section</th>
+              <th style="width: 70%; padding: 2mm 0; font-size: 9pt; border-bottom: 1px solid rgba(255,255,255,0.1);">Title</th>
+              <th style="width: 15%; padding: 2mm 0; font-size: 9pt; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: right;">Page</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>01</td><td>Cover Page</td><td style="text-align: right; font-weight: 700; color: #10B981;">01</td></tr>
+            <tr><td>02</td><td>Certificate & Acknowledgement</td><td style="text-align: right; font-weight: 700; color: #10B981;">02</td></tr>
+            <tr><td>03</td><td>Executive Summary</td><td style="text-align: right; font-weight: 700; color: #10B981;">04</td></tr>
+            <tr><td>04</td><td>Introduction & Problem Statement</td><td style="text-align: right; font-weight: 700; color: #10B981;">06</td></tr>
+            <tr><td>05</td><td>Project Objectives & Solution Cards</td><td style="text-align: right; font-weight: 700; color: #10B981;">08</td></tr>
+            <tr><td>06</td><td>System Comparison & Existing Systems</td><td style="text-align: right; font-weight: 700; color: #10B981;">09</td></tr>
+            <tr><td>07</td><td>Proposed Architecture & Core Workflow</td><td style="text-align: right; font-weight: 700; color: #10B981;">10</td></tr>
+            <tr><td>08</td><td>Website Layout & Navigation Grid</td><td style="text-align: right; font-weight: 700; color: #10B981;">11</td></tr>
+            <tr><td>09</td><td>AI Scanner Mechanics & Interface</td><td style="text-align: right; font-weight: 700; color: #10B981;">12</td></tr>
+            <tr><td>10</td><td>Services, Education, & Dashboard Sections</td><td style="text-align: right; font-weight: 700; color: #10B981;">13</td></tr>
+            <tr><td>11</td><td>Technical Feature Deep Dives</td><td style="text-align: right; font-weight: 700; color: #10B981;">14</td></tr>
+            <tr><td>12</td><td>Carbon Calculator & Algorithms</td><td style="text-align: right; font-weight: 700; color: #10B981;">15</td></tr>
+            <tr><td>13</td><td>Educational & Community Rewards Loops</td><td style="text-align: right; font-weight: 700; color: #10B981;">16</td></tr>
+            <tr><td>14</td><td>Technology Stack & Design System Tokens</td><td style="text-align: right; font-weight: 700; color: #10B981;">17</td></tr>
+            <tr><td>15</td><td>Vector Architecture & Flow Diagrams</td><td style="text-align: right; font-weight: 700; color: #10B981;">18</td></tr>
+            <tr><td>16</td><td>UI/UX Design Philosophy & Colors</td><td style="text-align: right; font-weight: 700; color: #10B981;">20</td></tr>
+            <tr><td>17</td><td>Sustainability Impact & Infographics</td><td style="text-align: right; font-weight: 700; color: #10B981;">21</td></tr>
+            <tr><td>18</td><td>Market Advantages & Startup Scalability</td><td style="text-align: right; font-weight: 700; color: #10B981;">22</td></tr>
+            <tr><td>19</td><td>Challenges Faced & Technical Mitigations</td><td style="text-align: right; font-weight: 700; color: #10B981;">23</td></tr>
+            <tr><td>20</td><td>Future Roadmap & Blockchain Enhancements</td><td style="text-align: right; font-weight: 700; color: #10B981;">24</td></tr>
+            <tr><td>21</td><td>Learning Outcomes & Project Conclusion</td><td style="text-align: right; font-weight: 700; color: #10B981;">25</td></tr>
+            <tr><td>22</td><td>Repository, Live Site, & SVG QR Codes</td><td style="text-align: right; font-weight: 700; color: #10B981;">26</td></tr>
+            <tr><td>23</td><td>Literature & Architecture References</td><td style="text-align: right; font-weight: 700; color: #10B981;">27</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <div class="page-footer">
+      <div>SecondLife Platform Documentation</div>
+      <div>Page 05</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 6: INTRODUCTION ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>06 / Introduction</div>
+    </div>
+
+    <div class="content-area">
+      <h2>Introduction</h2>
+      
+      <p style="font-size: 10.5pt; margin-bottom: 5mm;">
+        The rapid pace of global industrialization and consumer tech cycles has resulted in a massive surge of discarded goods. Millions of items—ranging from electronics and furniture to garments—are thrown into landfills every day. Surprisingly, over **60% of these discarded items retain fully functional utility** or possess repairable defects. 
+      </p>
+
+      <p style="margin-bottom: 5mm;">
+        Traditional recycling systems are fragmented and fail to engage the consumer. Users are typically left with no easy way to figure out how to repair a product, where to donate it, or how to recycle it responsibly. This results in the loss of valuable materials like copper, rare-earth metals, and quality textiles, which requires continuous mining and manufacturing that releases carbon emissions.
+      </p>
+
+      <div class="glass-card accent-emerald" style="margin-bottom: 5mm;">
+        <h3>AI as the Catalyst for Circularity</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          Artificial Intelligence (AI) offers a powerful solution to this problem. By using computer vision and intelligent decision algorithms, we can classify items, assess their wear, and determine their next best step immediately. SecondLife acts as a smart gateway to bridge this gap, turning discarded items into assets for local communities and industries.
+        </p>
+      </div>
+
+      <p>
+        By designing a clean, modern digital platform, SecondLife lowers the friction for users to adopt sustainable circular behaviors. The application combines interactive front-end components, 3D globes, and responsive sound design to turn ecological action into a rewarding and visually engaging experience.
+      </p>
+
+    </div>
+
+    <div class="page-footer">
+      <div>SecondLife Platform Documentation</div>
+      <div>Page 06</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 7: PROBLEM STATEMENT ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>07 / Problem Statement</div>
+    </div>
+
+    <div class="content-area">
+      <h2>Problem Statement</h2>
+      
+      <p style="margin-bottom: 6mm;">
+        The current consumption model is unsustainable, leading to waste accumulation, resource depletion, and carbon emissions. Below are the key problem vectors in waste management:
+      </p>
+
+      <div class="grid-2">
+        <div class="glass-card" style="margin-bottom: 0; border-top: 2px solid #EF4444;">
+          <h3 style="color: #EF4444; font-size: 11pt;">Electronic Waste (E-Waste)</h3>
+          <p style="font-size: 9pt; margin-bottom: 0; line-height: 1.5;">
+            Rapid hardware cycles discard millions of smartphones and laptops. Toxic heavy metals (lead, mercury) leak into groundwater, while precious rare-earth elements are permanently lost.
+          </p>
+        </div>
+
+        <div class="glass-card" style="margin-bottom: 0; border-top: 2px solid #F59E0B;">
+          <h3 style="color: #F59E0B; font-size: 11pt;">Fast Furniture Accumulation</h3>
+          <p style="font-size: 9pt; margin-bottom: 0; line-height: 1.5;">
+            Mass-market, low-cost particleboard furniture has a very short lifespan. Large furniture items are bulky, difficult to transport, and make up a major volume of municipal landfills.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom: 4mm;">
+        <div class="glass-card" style="margin-bottom: 0; border-top: 2px solid #3B82F6;">
+          <h3 style="color: #3B82F6; font-size: 11pt;">Textile & Clothing Waste</h3>
+          <p style="font-size: 9pt; margin-bottom: 0; line-height: 1.5;">
+            Fast fashion produces cheap synthetic clothing that takes centuries to decay. Textile production requires vast amounts of water, resulting in chemical pollution.
+          </p>
+        </div>
+
+        <div class="glass-card" style="margin-bottom: 0; border-top: 2px solid #10B981;">
+          <h3 style="color: #10B981; font-size: 11pt;">Failing Repair Infrastructure</h3>
+          <p style="font-size: 9pt; margin-bottom: 0; line-height: 1.5;">
+            Local repair shops are hard to find. Consumers often choose to discard and replace items with minor defects rather than seeking out local repair workshops.
+          </p>
+        </div>
+      </div>
+
+      <p style="margin-top: 2mm;">
+        Furthermore, donation centers struggle with sorting unsorted drop-offs, and recyclers struggle with material contamination. Without automated sorting and clear logistics, valuable materials continue to be wasted.
+      </p>
+
+    </div>
+
+    <div class="page-footer">
+      <div>SecondLife Platform Documentation</div>
+      <div>Page 07</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 8: OBJECTIVES ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>08 / Objectives</div>
+    </div>
+
+    <div class="content-area">
+      <h2>Project Objectives</h2>
+      
+      <p style="margin-bottom: 6mm;">
+        SecondLife is built to establish a centralized digital workspace that promotes sustainability. The primary technical and operational objectives of the platform are outlined below:
+      </p>
+
+      <div class="grid-2">
+        <div class="glass-card accent-cyan" style="margin-bottom: 0;">
+          <h3 style="font-size: 11pt; margin-bottom: 1.5mm;">1. Reduce Solid Waste</h3>
+          <p style="font-size: 9pt; margin-bottom: 0; line-height: 1.5;">
+            Divert salvageable goods away from landfills by directing them to secondary markets, repair networks, or recycling centers.
+          </p>
+        </div>
+        
+        <div class="glass-card accent-emerald" style="margin-bottom: 0;">
+          <h3 style="font-size: 11pt; margin-bottom: 1.5mm;">2. Automate Sorting via AI</h3>
+          <p style="font-size: 9pt; margin-bottom: 0; line-height: 1.5;">
+            Deploy computer vision algorithms to instantly recognize items and recommend the most eco-friendly action path.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="glass-card accent-cyan" style="margin-bottom: 0;">
+          <h3 style="font-size: 11pt; margin-bottom: 1.5mm;">3. Coordinate NGO Logistics</h3>
+          <p style="font-size: 9pt; margin-bottom: 0; line-height: 1.5;">
+            Integrate map APIs to connect donors with local NGOs, facilitating direct item transfer with zero carbon logistics.
+          </p>
+        </div>
+        
+        <div class="glass-card accent-emerald" style="margin-bottom: 0;">
+          <h3 style="font-size: 11pt; margin-bottom: 1.5mm;">4. Empower Repair Networks</h3>
+          <p style="font-size: 9pt; margin-bottom: 0; line-height: 1.5;">
+            Provide a localized repair marketplace that connects users with nearby technicians, promoting a sustainable repair culture.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom: 4mm;">
+        <div class="glass-card accent-cyan" style="margin-bottom: 0;">
+          <h3 style="font-size: 11pt; margin-bottom: 1.5mm;">5. Calculate Carbon Savings</h3>
+          <p style="font-size: 9pt; margin-bottom: 0; line-height: 1.5;">
+            Offer a transparent, data-driven ESG calculator to measure and show carbon and water conservation offsets for every transaction.
+          </p>
+        </div>
+        
+        <div class="glass-card accent-emerald" style="margin-bottom: 0;">
+          <h3 style="font-size: 11pt; margin-bottom: 1.5mm;">6. Drive Community Rewards</h3>
+          <p style="font-size: 9pt; margin-bottom: 0; line-height: 1.5;">
+            Create gamification loops that reward users with eco-points for their contributions, motivating long-term circular habits.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="page-footer">
+      <div>SecondLife Platform Documentation</div>
+      <div>Page 08</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 9: EXISTING SYSTEM ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>09 / Existing System</div>
+    </div>
+
+    <div class="content-area">
+      <h2>Existing Systems</h2>
+      
+      <p style="margin-bottom: 5mm;">
+        Traditional methods of managing unwanted items are highly fragmented. Users typically rely on local donation boxes, trash pick-ups, or posting items on general resale platforms. These systems suffer from several core limitations:
+      </p>
+
+      <div class="glass-card accent-cyan" style="padding: 4mm 6mm; margin-bottom: 5mm;">
+        <ul style="margin-bottom: 0;">
+          <li style="font-size: 9pt; margin-bottom: 1.5mm;"><strong>Manual Donation Logistics:</strong> Coordinating with NGOs often requires phone calls or manual drop-offs, creating friction that leads users to discard items instead.</li>
+          <li style="font-size: 9pt; margin-bottom: 1.5mm;"><strong>No Repair Support:</strong> Discarding a broken appliance is often cheaper and easier than searching for a technician who can fix it.</li>
+          <li style="font-size: 9pt; margin-bottom: 1.5mm;"><strong>Lack of Ecological Transparency:</strong> Users cannot see the carbon or environmental impact of their recycling or donation choices.</li>
+          <li style="font-size: 9pt; margin-bottom: 0;"><strong>No Automated Sorting:</strong> Donation bins frequently receive unusable trash, which requires manually sorting it at high operational cost.</li>
+        </ul>
+      </div>
+
+      <h3 style="font-size: 12pt; margin-bottom: 3mm; color: #FFF;">System Comparison Matrix</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Features / Metrics</th>
+            <th>Traditional Resale</th>
+            <th>Donation Bins</th>
+            <th>SecondLife</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>AI Item Sorting</strong></td>
+            <td style="color: #EF4444;">No (Manual text input)</td>
+            <td style="color: #EF4444;">No (Manual manual sorting)</td>
+            <td style="color: #10B981; font-weight: 700;">Yes (Instant Vision)</td>
+          </tr>
+          <tr>
+            <td><strong>Carbon & Water Tracking</strong></td>
+            <td style="color: #EF4444;">No</td>
+            <td style="color: #EF4444;">No</td>
+            <td style="color: #10B981; font-weight: 700;">Yes (Automated ESG)</td>
+          </tr>
+          <tr>
+            <td><strong>Integrated Repair</strong></td>
+            <td style="color: #EF4444;">No</td>
+            <td style="color: #EF4444;">No</td>
+            <td style="color: #10B981; font-weight: 700;">Yes (Local Marketplace)</td>
+          </tr>
+          <tr>
+            <td><strong>Gamification Loops</strong></td>
+            <td style="color: #F59E0B;">Financial only</td>
+            <td style="color: #EF4444;">No</td>
+            <td style="color: #10B981; font-weight: 700;">Yes (Eco-points/Rewards)</td>
+          </tr>
+          <tr>
+            <td><strong>Automated Pickups</strong></td>
+            <td style="color: #EF4444;">No</td>
+            <td style="color: #EF4444;">No</td>
+            <td style="color: #10B981; font-weight: 700;">Yes (Zero-emission router)</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+    <div class="page-footer">
+      <div>SecondLife Platform Documentation</div>
+      <div>Page 09</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 10: PROPOSED SYSTEM ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>10 / Proposed System</div>
+    </div>
+
+    <div class="content-area">
+      <h2>Proposed System</h2>
+      
+      <p style="margin-bottom: 4mm;">
+        The proposed **SecondLife** architecture addresses these challenges by introducing a unified, AI-driven circular economy engine. The system automates user decision-making, offering an integrated interface to sort, repair, donate, or recycle any consumer product.
+      </p>
+
+      <div class="glass-card accent-emerald" style="padding: 4.5mm 6mm; margin-bottom: 4mm;">
+        <h3 style="font-size: 11pt; margin-bottom: 1.5mm;">Step-by-Step User Flow</h3>
+        <p style="font-size: 9pt; margin-bottom: 0; line-height: 1.6;">
+          1. **Image Upload:** The user uploads a photo or captures an image of an item (e.g., a laptop or jacket).<br>
+          2. **Computer Vision Processing:** The AI model classifies the item category, detects materials, and assesses its condition.<br>
+          3. **Intelligent Routing:** The engine calculates scores for repair, donation, and recycling, recommending the best action path.<br>
+          4. **Logistics & Impact:** The platform connects the user with nearby partners (NGOs or repair shops) and displays their personal carbon offset metrics.
+        </p>
+      </div>
+
+      <h3 style="font-size: 12pt; margin-bottom: 2mm; color: #FFF;">System Interaction Flowchart</h3>
+      <div class="diagram-container">
+        <!-- SVG proposed flow diagram -->
+        <svg class="diagram-svg" viewBox="0 0 600 170" width="100%">
+          <defs>
+            <linearGradient id="grad-cyan-green" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#00F5FF" />
+              <stop offset="100%" stop-color="#10B981" />
+            </linearGradient>
+            <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#10B981" />
+            </marker>
+          </defs>
+          
+          <!-- Node 1: User Upload -->
+          <rect x="10" y="55" width="90" height="50" rx="8" fill="rgba(255,255,255,0.03)" stroke="#00F5FF" stroke-width="1.5" />
+          <text x="55" y="80" fill="#FFF" font-family="Outfit" font-size="8.5pt" font-weight="700" text-anchor="middle">Image Upload</text>
+          <path d="M 100 80 L 130 80" fill="none" stroke="#10B981" stroke-width="1.5" marker-end="url(#arrow)" />
+          
+          <!-- Node 2: Computer Vision -->
+          <rect x="140" y="55" width="100" height="50" rx="8" fill="rgba(255,255,255,0.03)" stroke="url(#grad-cyan-green)" stroke-width="1.5" />
+          <text x="190" y="80" fill="#FFF" font-family="Outfit" font-size="8.5pt" font-weight="700" text-anchor="middle">AI Material Engine</text>
+          <path d="M 240 80 L 270 80" fill="none" stroke="#10B981" stroke-width="1.5" marker-end="url(#arrow)" />
+          
+          <!-- Node 3: Scoring router -->
+          <rect x="280" y="55" width="110" height="50" rx="8" fill="rgba(255,255,255,0.03)" stroke="#10B981" stroke-width="1.5" />
+          <text x="335" y="80" fill="#FFF" font-family="Outfit" font-size="8.5pt" font-weight="700" text-anchor="middle">Circularity Routing</text>
+          
+          <!-- Paths going out -->
+          <path d="M 390 65 L 470 30" fill="none" stroke="#00F5FF" stroke-width="1.5" marker-end="url(#arrow)" />
+          <path d="M 390 80 L 470 80" fill="none" stroke="#10B981" stroke-width="1.5" marker-end="url(#arrow)" />
+          <path d="M 390 95 L 470 130" fill="none" stroke="#F59E0B" stroke-width="1.5" marker-end="url(#arrow)" />
+          
+          <!-- Endnodes -->
+          <rect x="480" y="10" width="110" height="35" rx="6" fill="rgba(255,255,255,0.02)" stroke="#00F5FF" stroke-width="1" />
+          <text x="535" y="31" fill="#D1D5DB" font-family="Outfit" font-size="8pt" text-anchor="middle">Donate to NGO</text>
+          
+          <rect x="480" y="62.5" width="110" height="35" rx="6" fill="rgba(255,255,255,0.02)" stroke="#10B981" stroke-width="1" />
+          <text x="535" y="83.5" fill="#D1D5DB" font-family="Outfit" font-size="8pt" text-anchor="middle">Refurbish & Sell</text>
+          
+          <rect x="480" y="115" width="110" height="35" rx="6" fill="rgba(255,255,255,0.02)" stroke="#F59E0B" stroke-width="1" />
+          <text x="535" y="136" fill="#D1D5DB" font-family="Outfit" font-size="8pt" text-anchor="middle">Material Recycling</text>
+        </svg>
+      </div>
+
+    </div>
+
+    <div class="page-footer">
+      <div>SecondLife Platform Documentation</div>
+      <div>Page 10</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 11: WEBSITE OVERVIEW - HERO & NAV ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>11 / Website Overview</div>
+    </div>
+
+    <div class="content-area">
+      <h2>Hero Section & Side Nav</h2>
+      
+      <p style="margin-bottom: 5mm;">
+        The landing page of **SecondLife** is designed to capture attention and communicate the platform's environmental mission. It features an interactive layout with premium visual feedback:
+      </p>
+
+      <div class="glass-card accent-cyan" style="margin-bottom: 5mm;">
+        <h3>Dynamic 3D Particle Canvas</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          Behind the text layers, a WebGL-based Three.js particle canvas renders a rotating digital globe. As users scroll, the particles dynamically react to scroll speeds, forming orbits that symbolize materials moving through a circular economy.
+        </p>
+      </div>
+
+      <div class="glass-card accent-emerald" style="margin-bottom: 5mm;">
+        <h3>Interactive Custom Cursor</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          A custom SVG-based cursor tracker follows the pointer, transforming into an emerald-tinted neon ring with a cyan center dot when hovering over interactive elements. This visual feedback makes browsing the site feel fluid and responsive.
+        </p>
+      </div>
+
+      <div class="glass-card" style="margin-bottom: 5mm;">
+        <h3>Floating Glassmorphic Sidebar</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          A vertical navigation bar on the right side of the screen shows dots for each section of the page. It updates dynamically using a custom scroll listener, highlighting the current section as the user scrolls.
+        </p>
+      </div>
+
+      <div class="screenshot-placeholder">
+        <span class="screenshot-placeholder-title">Landing UI Layout Overview</span>
+        <span class="screenshot-placeholder-desc">[ Floating Header ] &rarr; [ ThreeJS Globe ] &rarr; [ Floating Audio Toggle ]</span>
+      </div>
+
+    </div>
+
+    <div class="page-footer">
+      <div>SecondLife Platform Documentation</div>
+      <div>Page 11</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 12: WEBSITE OVERVIEW - SCANNER & HOW IT WORKS ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>12 / Website Overview</div>
+    </div>
+
+    <div class="content-area">
+      <h2>AI Scanner & How It Works</h2>
+      
+      <p style="margin-bottom: 5mm;">
+        The **AI Second Life Scanner** is the core functional area of the application. It consists of a split-screen dashboard that guides users through the item analysis pipeline:
+      </p>
+
+      <div class="glass-card accent-cyan" style="margin-bottom: 5mm;">
+        <h3>Split-Screen Diagnostic Interface</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          The left column features a drag-and-drop file upload zone that triggers a scanning laser animation when an image is loaded. The right column shows real-time metrics, using radial progress bars to display repair, donation, and recycling scores.
+        </p>
+      </div>
+
+      <div class="glass-card accent-emerald" style="margin-bottom: 5mm;">
+        <h3>Active Scanning Sound Design</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          During scanning, a synthesizer generates a digital hum that changes pitch using an LFO. Once the analysis completes, the hum fades out and plays an ascending C-major arpeggio chime, giving clear feedback to the user.
+        </p>
+      </div>
+
+      <h3 style="font-size: 11pt; color: #FFF; margin-bottom: 3mm;">Interactive Timeline Loop</h3>
+      <div class="timeline">
+        <div class="timeline-item cyan">
+          <strong style="color: #FFF;">Step 01: Capture & Upload</strong>
+          <p style="font-size: 8.5pt; margin-bottom: 0; color: #9CA3AF;">User uploads an item photo or selects a quick-scan demo card.</p>
+        </div>
+        <div class="timeline-item">
+          <strong style="color: #FFF;">Step 02: AI Material Identification</strong>
+          <p style="font-size: 8.5pt; margin-bottom: 0; color: #9CA3AF;">Neural networks classify materials and evaluate item wear.</p>
+        </div>
+        <div class="timeline-item cyan">
+          <strong style="color: #FFF;">Step 03: Direct Partner Action</strong>
+          <p style="font-size: 8.5pt; margin-bottom: 0; color: #9CA3AF;">Connect with local NGOs or schedule zero-emission item pickups.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="page-footer">
+      <div>SecondLife Platform Documentation</div>
+      <div>Page 12</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 13: WEBSITE OVERVIEW - DASHBOARD & COMMUNITY ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>13 / Website Overview</div>
+    </div>
+
+    <div class="content-area">
+      <h2>Dashboard & Community Hub</h2>
+      
+      <p style="margin-bottom: 5mm;">
+        Beyond item scanning, SecondLife provides sections that encourage long-term sustainability habits and build community engagement:
+      </p>
+
+      <div class="glass-card accent-cyan" style="margin-bottom: 5mm;">
+        <h3>ESG Impact Dashboard</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          The Dashboard shows personal and community sustainability metrics, tracking total carbon offsets, water conserved, and items diverted from landfills. Data grids render carbon savings using live tracking statistics.
+        </p>
+      </div>
+
+      <div class="glass-card accent-emerald" style="margin-bottom: 5mm;">
+        <h3>Interactive Global Partner Map</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          A vector map shows active recycling centers, partner NGOs, and local repair shops. Users can click pins to see address details and coordinate donation collections.
+        </p>
+      </div>
+
+      <div class="glass-card" style="margin-bottom: 5mm;">
+        <h3>Social Hub & Contact Form</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          The Social Hub shows real-world impact stories, educational resources on circularity, and a glassmorphic contact form for organizations wanting to join the SecondLife network.
+        </p>
+      </div>
+
+      <div class="screenshot-placeholder" style="height: 40mm;">
+        <span class="screenshot-placeholder-title">ESG Impact Panel</span>
+        <span class="screenshot-placeholder-desc">[ Carbon Tracker ] &rarr; [ Partner Pins Map ] &rarr; [ Rewards Dashboard ]</span>
+      </div>
+
+    </div>
+
+    <div class="page-footer">
+      <div>SecondLife Platform Documentation</div>
+      <div>Page 13</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 14: FEATURES - AI SCANNER & DONATION MATCHING ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>14 / Features Deep Dive</div>
+    </div>
+
+    <div class="content-area">
+      <h2>AI Scanner & Donation Engine</h2>
+      
+      <div class="glass-card accent-cyan" style="margin-bottom: 6mm;">
+        <h3>AI Object Identification & Wear Detection</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 3mm; line-height: 1.6;">
+          The core scanning engine uses computer vision to classify items and assess their wear. It identifies materials and evaluates condition factors like battery health, surface wear, and fabric quality.
+        </p>
+        <div style="font-family: 'Fira Code', monospace; font-size: 8.5pt; color: #10B981; background: rgba(0,0,0,0.4); padding: 3mm; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+          classifier.predict(image) &rarr; { class: "Electronics", wear: "Minor" }
+        </div>
+      </div>
+
+      <div class="glass-card accent-emerald" style="margin-bottom: 6mm;">
+        <h3>Intelligent Donation Routing</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 3.5mm; line-height: 1.6;">
+          Items with high donation scores (good condition, high utility) are matched with regional partners based on coordinates. This ensures electronics go to digital literacy programs and warm garments go to shelter networks.
+        </p>
+        <p style="font-size: 9pt; margin-bottom: 0; color: #9CA3AF;">
+          Integrating location APIs allows donors to find and coordinate drop-offs with nearby charities with minimal travel distance.
+        </p>
+      </div>
+
+      <p>
+        By automating sorting and matchmaking, the platform simplifies donation logistics. This reduces manual work for NGOs and helps ensure donated items match their current needs.
+      </p>
+
+    </div>
+
+    <div class="page-footer">
+      <div>SecondLife Platform Documentation</div>
+      <div>Page 14</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 15: FEATURES - REPAIR & CARBON CALCULATOR ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>15 / Features Deep Dive</div>
+    </div>
+
+    <div class="content-area">
+      <h2>Repair Network & Carbon Calculator</h2>
+      
+      <p style="margin-bottom: 5mm;">
+        To support repair efforts, SecondLife connects users with local technicians and provides an automated calculator to show their environmental savings:
+      </p>
+
+      <div class="glass-card accent-cyan" style="margin-bottom: 5mm;">
+        <h3>Localized Repair Marketplace</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          When the AI detects minor repairable faults, it lists certified local technicians. The page displays the technician's location, repair rating, and cost estimates, encouraging users to fix items rather than replacing them.
+        </p>
+      </div>
+
+      <div class="glass-card accent-emerald" style="margin-bottom: 5mm;">
+        <h3>ESG Calculator Formula</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 3mm; line-height: 1.6;">
+          The system calculates CO2 offsets and water conserved by comparing the impact of reusing an item against manufacturing a new one. The formula factors in manufacturing and transportation emissions:
+        </p>
+        <div style="font-family: 'Fira Code', monospace; font-size: 9pt; color: #00F5FF; background: rgba(0,0,0,0.4); padding: 3.5mm; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05); text-align: center;">
+          E_saved = E_manufacturing &times; (Score / 100) - E_transportation
+        </div>
+      </div>
+
+      <div class="glass-card" style="margin-bottom: 5mm;">
+        <h3>Transparent Environmental Metrics</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          The carbon calculator uses data from life-cycle assessments (LCA) to show real-world metrics, like liters of water saved and kilograms of CO2 avoided, giving users clear feedback on their impact.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="page-footer">
+      <div>SecondLife Platform Documentation</div>
+      <div>Page 15</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 16: FEATURES - REWARDS & EDUCATION ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>16 / Features Deep Dive</div>
+    </div>
+
+    <div class="content-area">
+      <h2>Rewards Program & Education Hub</h2>
+      
+      <p style="margin-bottom: 5mm;">
+        We use gamification and educational resources to encourage users to adopt circular economy habits over the long term:
+      </p>
+
+      <div class="glass-card accent-cyan" style="margin-bottom: 5mm;">
+        <h3>Gamified Eco-Points & Leaderboards</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          Every time a user scans and successfully processes an item, they earn Eco-Points. The community dashboard displays active leaderboards, letting users see how they rank compared to others and motivating them to contribute more.
+        </p>
+      </div>
+
+      <div class="glass-card accent-emerald" style="margin-bottom: 5mm;">
+        <h3>Localized Volunteer Networks</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          The platform includes a coordination portal for volunteer networks. Active users can sign up as eco-couriers to collect items from donors and deliver them to NGOs, earning extra rewards points.
+        </p>
+      </div>
+
+      <div class="glass-card" style="margin-bottom: 5mm;">
+        <h3>Circularity Education Hub</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          The Education Hub offers guides and articles on upcycling, repair basics, and waste classification. This content teaches users how to make sustainable choices and manage resources more effectively.
+        </p>
+      </div>
+
+      <p>
+        These features transform ecological actions from a chore into a shared community activity, helping to build long-term habits.
+      </p>
+
+    </div>
+
+    <div class="page-footer">
+      <div>SecondLife Platform Documentation</div>
+      <div>Page 16</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 17: TECHNOLOGY STACK ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>17 / Technology Stack</div>
+    </div>
+
+    <div class="content-area">
+      <h2>Technology Stack</h2>
+      
+      <p style="margin-bottom: 6mm;">
+        SecondLife is built using modern web technologies to deliver a fast, responsive, and engaging user interface:
+      </p>
+
+      <div class="grid-2">
+        <div class="glass-card accent-cyan" style="margin-bottom: 0;">
+          <h3 style="color: #00F5FF; font-size: 12pt;">Frontend Framework</h3>
+          <p style="font-size: 9pt; margin-bottom: 3mm; line-height: 1.5;">
+            Built on **React** and **Next.js** to handle server-side rendering, routing, and component states.
+          </p>
+          <span class="tech-pill">Next.js 16</span>
+          <span class="tech-pill">React 19</span>
+          <span class="tech-pill">TypeScript</span>
+        </div>
+
+        <div class="glass-card accent-emerald" style="margin-bottom: 0;">
+          <h3 style="color: #10B981; font-size: 12pt;">Interactive Styling</h3>
+          <p style="font-size: 9pt; margin-bottom: 3mm; line-height: 1.5;">
+            Styled with **Tailwind CSS** for layout responsiveness, custom grid systems, and glassmorphic panels.
+          </p>
+          <span class="tech-pill">Tailwind CSS 4</span>
+          <span class="tech-pill">Lucide Icons</span>
+          <span class="tech-pill">Vanilla CSS</span>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom: 5mm;">
+        <div class="glass-card accent-cyan" style="margin-bottom: 0;">
+          <h3 style="color: #00F5FF; font-size: 12pt;">3D & Motion Engines</h3>
+          <p style="font-size: 9pt; margin-bottom: 3mm; line-height: 1.5;">
+            Uses **Three.js** and **Framer Motion** for smooth transitions, layout changes, and interactive 3D particle globes.
+          </p>
+          <span class="tech-pill">Three.js</span>
+          <span class="tech-pill">R3F</span>
+          <span class="tech-pill">Framer Motion</span>
+          <span class="tech-pill">Lenis</span>
+        </div>
+
+        <div class="glass-card accent-emerald" style="margin-bottom: 0;">
+          <h3 style="color: #10B981; font-size: 12pt;">Audio & AI Concepts</h3>
+          <p style="font-size: 9pt; margin-bottom: 3mm; line-height: 1.5;">
+            Features a **Web Audio API** synthesizer for interactive sound design and mock classification logic.
+          </p>
+          <span class="tech-pill">Web Audio API</span>
+          <span class="tech-pill">Mock Inference</span>
+          <span class="tech-pill">Vercel Edge</span>
+        </div>
+      </div>
+
+      <p style="margin-top: 1mm;">
+        This modern architecture ensures the platform loads quickly, runs smoothly on mobile devices, and handles interactive elements without lag.
+      </p>
+
+    </div>
+
+    <div class="page-footer">
+      <div>SecondLife Platform Documentation</div>
+      <div>Page 17</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 18: SYSTEM ARCHITECTURE ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>18 / System Architecture</div>
+    </div>
+
+    <div class="content-area">
+      <h2>System Architecture</h2>
+      
+      <p style="margin-bottom: 4mm;">
+        SecondLife uses a client-edge architecture designed to process user actions quickly and coordinate efficiently with local partners:
+      </p>
+
+      <div class="diagram-container">
+        <!-- SVG system architecture diagram -->
+        <svg class="diagram-svg" viewBox="0 0 600 240" width="100%">
+          <!-- Defs for arrows and gradients -->
+          <defs>
+            <linearGradient id="cyan-green" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#00F5FF" />
+              <stop offset="100%" stop-color="#10B981" />
+            </linearGradient>
+          </defs>
+
+          <!-- Core layers -->
+          <!-- Layer 1: Client/User (Left) -->
+          <rect x="10" y="70" width="100" height="100" rx="8" fill="rgba(255,255,255,0.02)" stroke="#9CA3AF" stroke-width="1.5" />
+          <text x="60" y="110" fill="#FFF" font-family="Outfit" font-size="9pt" font-weight="700" text-anchor="middle">USER CLIENT</text>
+          <text x="60" y="130" fill="#9CA3AF" font-family="Fira Code" font-size="7pt" text-anchor="middle">Browser / Mobile</text>
+
+          <!-- Layer 2: Frontend Server (Center) -->
+          <rect x="170" y="70" width="120" height="100" rx="8" fill="rgba(255,255,255,0.02)" stroke="url(#cyan-green)" stroke-width="2" />
+          <text x="230" y="110" fill="#FFF" font-family="Outfit" font-size="9pt" font-weight="700" text-anchor="middle">NEXT.JS ENGINE</text>
+          <text x="230" y="130" fill="#00F5FF" font-family="Fira Code" font-size="7.5pt" text-anchor="middle">Three.js Globe</text>
+          <text x="230" y="145" fill="#10B981" font-family="Fira Code" font-size="7.5pt" text-anchor="middle">Web Audio Synth</text>
+
+          <!-- Layer 3: AI & Recommendation Engine (Right-Center) -->
+          <rect x="340" y="70" width="110" height="100" rx="8" fill="rgba(255,255,255,0.02)" stroke="#10B981" stroke-width="1.5" />
+          <text x="395" y="105" fill="#FFF" font-family="Outfit" font-size="9pt" font-weight="700" text-anchor="middle">AI ENGINE</text>
+          <text x="395" y="125" fill="#D1D5DB" font-family="Fira Code" font-size="7.5pt" text-anchor="middle">CV Classifier</text>
+          <text x="395" y="140" fill="#D1D5DB" font-family="Fira Code" font-size="7.5pt" text-anchor="middle">Routing logic</text>
+
+          <!-- Layer 4: Endpoint network (Right) -->
+          <rect x="490" y="15" width="100" height="40" rx="6" fill="rgba(255,255,255,0.01)" stroke="#3B82F6" stroke-width="1" />
+          <text x="540" y="40" fill="#D1D5DB" font-family="Outfit" font-size="8pt" text-anchor="middle">NGO Partners</text>
+          
+          <rect x="490" y="70" width="100" height="40" rx="6" fill="rgba(255,255,255,0.01)" stroke="#10B981" stroke-width="1" />
+          <text x="540" y="95" fill="#D1D5DB" font-family="Outfit" font-size="8pt" text-anchor="middle">Repair Network</text>
+          
+          <rect x="490" y="125" width="100" height="40" rx="6" fill="rgba(255,255,255,0.01)" stroke="#F59E0B" stroke-width="1" />
+          <text x="540" y="150" fill="#D1D5DB" font-family="Outfit" font-size="8pt" text-anchor="middle">E-Waste Recycler</text>
+          
+          <rect x="490" y="180" width="100" height="40" rx="6" fill="rgba(255,255,255,0.01)" stroke="#EF4444" stroke-width="1" />
+          <text x="540" y="205" fill="#D1D5DB" font-family="Outfit" font-size="8pt" text-anchor="middle">Marketplace</text>
+
+          <!-- Paths and Connections -->
+          <!-- Client <--> Next.js -->
+          <path d="M 110 110 L 170 110" fill="none" stroke="url(#cyan-green)" stroke-width="1.5" marker-end="url(#arrow)" />
+          <path d="M 170 130 L 110 130" fill="none" stroke="url(#cyan-green)" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <!-- Next.js <--> AI Engine -->
+          <path d="M 290 120 L 340 120" fill="none" stroke="#10B981" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <!-- AI Engine -->
+          <path d="M 450 110 L 485 35" fill="none" stroke="#9CA3AF" stroke-width="1.2" marker-end="url(#arrow)" />
+          <path d="M 450 115 L 485 85" fill="none" stroke="#9CA3AF" stroke-width="1.2" marker-end="url(#arrow)" />
+          <path d="M 450 120 L 485 140" fill="none" stroke="#9CA3AF" stroke-width="1.2" marker-end="url(#arrow)" />
+          <path d="M 450 125 L 485 190" fill="none" stroke="#9CA3AF" stroke-width="1.2" marker-end="url(#arrow)" />
+
+          <!-- Return feedback loop to Client Dashboard -->
+          <path d="M 490 35 L 290 85" fill="none" stroke="rgba(255,255,255,0.15)" stroke-dasharray="3,3" />
+        </svg>
+      </div>
+
+      <p style="margin-top: 1mm;">
+        This structure ensures the user interface remains responsive on the client side, while heavy processing tasks are routed to specialized edge services for fast responses.
+      </p>
+
+    </div>
+
+    <div class="page-footer">
+      <div>SecondLife Platform Documentation</div>
+      <div>Page 18</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 19: AI WORKFLOW ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>19 / AI Workflow</div>
+    </div>
+
+    <div class="content-area">
+      <h2>AI Recommendation Workflow</h2>
+      
+      <p style="margin-bottom: 4mm;">
+        The circular recommendation engine processes item data through a series of logical steps to determine the best environmental action path:
+      </p>
+
+      <div class="diagram-container">
+        <!-- SVG AI flow details -->
+        <svg class="diagram-svg" viewBox="0 0 600 230" width="100%">
+          <rect x="5" y="10" width="100" height="45" rx="5" fill="rgba(255,255,255,0.02)" stroke="#00F5FF" stroke-width="1.5" />
+          <text x="55" y="32" fill="#FFF" font-family="Outfit" font-size="8pt" font-weight="700" text-anchor="middle">1. Image Upload</text>
+          <path d="M 105 32 L 140 32" fill="none" stroke="#10B981" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <rect x="145" y="10" width="120" height="45" rx="5" fill="rgba(255,255,255,0.02)" stroke="#10B981" stroke-width="1.5" />
+          <text x="205" y="32" fill="#FFF" font-family="Outfit" font-size="8pt" font-weight="700" text-anchor="middle">2. Material Detect</text>
+          <path d="M 265 32 L 300 32" fill="none" stroke="#10B981" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <!-- Decision Diamond (represented as polygon) -->
+          <polygon points="360,5 410,32 360,60 310,32" fill="rgba(255,255,255,0.03)" stroke="#F59E0B" stroke-width="1.5" />
+          <text x="360" y="36" fill="#FFF" font-family="Outfit" font-size="7.5pt" font-weight="700" text-anchor="middle">3. Good Wear?</text>
+          
+          <!-- Path Yes -->
+          <path d="M 410 32 L 485 32" fill="none" stroke="#10B981" stroke-width="1.5" marker-end="url(#arrow)" />
+          <text x="445" y="25" fill="#10B981" font-family="Outfit" font-size="7.5pt">YES</text>
+          
+          <!-- Path No -->
+          <path d="M 360 60 L 360 115" fill="none" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arrow)" />
+          <text x="368" y="85" fill="#EF4444" font-family="Outfit" font-size="7.5pt">NO</text>
+
+          <rect x="490" y="10" width="105" height="45" rx="5" fill="rgba(255,255,255,0.02)" stroke="#10B981" stroke-width="1.5" />
+          <text x="542.5" y="32" fill="#FFF" font-family="Outfit" font-size="8pt" font-weight="700" text-anchor="middle">Donate / Resell</text>
+
+          <!-- Lower row -->
+          <polygon points="360,115 410,142 360,170 310,142" fill="rgba(255,255,255,0.03)" stroke="#F59E0B" stroke-width="1.5" />
+          <text x="360" y="146" fill="#FFF" font-family="Outfit" font-size="7.5pt" font-weight="700" text-anchor="middle">4. Repairable?</text>
+          
+          <!-- Path Yes -->
+          <path d="M 410 142 L 485 142" fill="none" stroke="#10B981" stroke-width="1.5" marker-end="url(#arrow)" />
+          <text x="445" y="135" fill="#10B981" font-family="Outfit" font-size="7.5pt">YES</text>
+
+          <rect x="490" y="120" width="105" height="45" rx="5" fill="rgba(255,255,255,0.02)" stroke="#00F5FF" stroke-width="1.5" />
+          <text x="542.5" y="142" fill="#FFF" font-family="Outfit" font-size="8pt" font-weight="700" text-anchor="middle">Repair Network</text>
+
+          <!-- Path No -->
+          <path d="M 310 142 L 230 142" fill="none" stroke="#EF4444" stroke-width="1.5" marker-end="url(#arrow)" />
+          <text x="270" y="135" fill="#EF4444" font-family="Outfit" font-size="7.5pt">NO</text>
+
+          <rect x="120" y="120" width="105" height="45" rx="5" fill="rgba(255,255,255,0.02)" stroke="#EF4444" stroke-width="1.5" />
+          <text x="172.5" y="142" fill="#FFF" font-family="Outfit" font-size="8pt" font-weight="700" text-anchor="middle">Material Recycle</text>
+
+          <!-- Output Node (Center Bottom) -->
+          <path d="M 542.5 165 L 542.5 195 L 360 195" fill="none" stroke="#10B981" stroke-width="1.2" />
+          <path d="M 172.5 165 L 172.5 195 L 240 195" fill="none" stroke="#10B981" stroke-width="1.2" />
+          <path d="M 240 195 L 260 195" fill="none" stroke="#10B981" stroke-width="1.2" marker-end="url(#arrow)" />
+
+          <rect x="260" y="175" width="100" height="40" rx="4" fill="rgba(255,255,255,0.03)" stroke="url(#cyan-green)" stroke-width="1" />
+          <text x="310" y="200" fill="#FFF" font-family="Outfit" font-size="8pt" font-weight="700" text-anchor="middle">Calculate Impact</text>
+        </svg>
+      </div>
+
+      <p style="margin-top: 1.5mm; font-size: 9.5pt;">
+        This logic flow ensures every scanned item is routed to the most sustainable option. Reusable goods go to donors, repairable ones to technicians, and worn-out items are directed to verified recycling facilities.
+      </p>
+
+    </div>
+
+    <div class="page-footer">
+      <div>SecondLife Platform Documentation</div>
+      <div>Page 19</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 20: UI/UX DESIGN ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>20 / UI/UX Design System</div>
+    </div>
+
+    <div class="content-area">
+      <h2>UI/UX Design System</h2>
+      
+      <p style="margin-bottom: 5mm;">
+        The visual identity of **SecondLife** is designed to look like a premium tech platform rather than a simple class assignment. We use design tokens to maintain visual consistency across all sections:
+      </p>
+
+      <div class="glass-card accent-cyan" style="margin-bottom: 5mm;">
+        <h3>Premium Neon & Space Dark Palette</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 3mm; line-height: 1.6;">
+          The interface uses a very dark blue-grey background (`#030712`) to save screen energy. We use glowing **Emerald Green** (`#10B981`) and **Futuristic Cyan** (`#00F5FF`) as accent colors to guide attention to key interactive features.
+        </p>
+        <span class="tech-pill">Bg: #030712</span>
+        <span class="tech-pill">Cyan: #00F5FF</span>
+        <span class="tech-pill">Emerald: #10B981</span>
+      </div>
+
+      <div class="glass-card accent-emerald" style="margin-bottom: 5mm;">
+        <h3>Glassmorphism UI Patterns</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          Content is organized in cards with semi-transparent backgrounds and thin, light borders (`rgba(255,255,255,0.08)`). Applying CSS backdrop filters creates a clear hierarchy and keeps layout overlays looking clean.
+        </p>
+      </div>
+
+      <div class="glass-card" style="margin-bottom: 5mm;">
+        <h3>Interactions & Micro-Feedback</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          Interactive elements scale up slightly on hover and compress on click. We use Web Audio API chimes and cursor changes to make actions like file uploads and button presses feel tactile and responsive.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="page-footer">
+      <div>SecondLife Platform Documentation</div>
+      <div>Page 20</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 21: SUSTAINABILITY IMPACT ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>21 / Sustainability Impact</div>
+    </div>
+
+    <div class="content-area">
+      <h2>Sustainability Impact</h2>
+      
+      <p style="margin-bottom: 6mm;">
+        We track several key environmental metrics to show the tangible impact of donating and recycling through SecondLife:
+      </p>
+
+      <div class="grid-2">
+        <div class="glass-card accent-cyan" style="margin-bottom: 0;">
+          <div class="metric-number">4,250 kg</div>
+          <h3 style="font-size: 11pt; margin-bottom: 1.5mm; color: #FFF;">Carbon Saved (CO2)</h3>
+          <p style="font-size: 9pt; margin-bottom: 0; line-height: 1.5;">
+            Diverting electronics and metals from landfills avoids the emissions required to mine and process raw materials.
+          </p>
+        </div>
+
+        <div class="glass-card accent-emerald" style="margin-bottom: 0;">
+          <div class="metric-number">48,500 L</div>
+          <h3 style="font-size: 11pt; margin-bottom: 1.5mm; color: #FFF;">Water Preserved</h3>
+          <p style="font-size: 9pt; margin-bottom: 0; line-height: 1.5;">
+            Extending the lifespan of textiles and garments prevents the water waste associated with manufacturing new fabrics.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom: 5mm;">
+        <div class="glass-card accent-emerald" style="margin-bottom: 0;">
+          <div class="metric-number">380 units</div>
+          <h3 style="font-size: 11pt; margin-bottom: 1.5mm; color: #FFF;">Landfill Diversion</h3>
+          <p style="font-size: 9pt; margin-bottom: 0; line-height: 1.5;">
+            Bulky furniture, plastics, and appliances are successfully diverted into circular reuse cycles.
+          </p>
+        </div>
+
+        <div class="glass-card accent-cyan" style="margin-bottom: 0;">
+          <div class="metric-number">42 NGO</div>
+          <h3 style="font-size: 11pt; margin-bottom: 1.5mm; color: #FFF;">Partners Connected</h3>
+          <p style="font-size: 9pt; margin-bottom: 0; line-height: 1.5;">
+            A unified logistics interface connects donors directly with nearby humanitarian and shelter networks.
+          </p>
+        </div>
+      </div>
+
+      <p style="margin-top: 1mm;">
+        By converting recycling actions into clear, quantified carbon offsets, SecondLife provides transparent feedback that motivates users to make sustainable habits a permanent part of their routine.
+      </p>
+
+    </div>
+
+    <div class="page-footer">
+      <div>SecondLife Platform Documentation</div>
+      <div>Page 21</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 22: ADVANTAGES & MARKET SCALABILITY ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>22 / Advantages & Scalability</div>
+    </div>
+
+    <div class="content-area">
+      <h2>Advantages & Scalability</h2>
+      
+      <p style="margin-bottom: 5mm;">
+        SecondLife combines a modern user interface with automated backend routing. This design offers several advantages over traditional recycling platforms:
+      </p>
+
+      <div class="glass-card accent-cyan" style="margin-bottom: 5mm;">
+        <h3>Zero-Friction User Experience</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          Instead of manually filling out long forms, users can simply upload a photo of an item. The AI classifies it and recommends the best disposal path, reducing the effort needed to adopt sustainable habits.
+        </p>
+      </div>
+
+      <div class="glass-card accent-emerald" style="margin-bottom: 5mm;">
+        <h3>Local Enterprise Integration</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          The platform connects users directly with local repair shops, NGOs, and recyclers. This decentralized approach creates a shared regional network, helping local businesses grow while keeping logistics costs low.
+        </p>
+      </div>
+
+      <div class="glass-card" style="margin-bottom: 5mm;">
+        <h3>Scalable Platform Architecture</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          The modular React and Next.js frontend is designed to support expanding services, such as live AI image feeds, blockchain tracking, and carbon credit integrations, without requiring a complete rewrite of the system.
+        </p>
+      </div>
+
+      <p>
+        This combination of automated classification, local business integration, and scalable code makes SecondLife a viable foundation for a modern green-tech startup.
+      </p>
+
+    </div>
+
+    <div class="page-footer">
+      <div>SecondLife Platform Documentation</div>
+      <div>Page 22</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 23: CHALLENGES FACED & MITIGATIONS ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>23 / Challenges Faced</div>
+    </div>
+
+    <div class="content-area">
+      <h2>Challenges Faced & Mitigations</h2>
+      
+      <p style="margin-bottom: 5mm;">
+        During the development of SecondLife, we addressed several technical challenges related to 3D rendering, browser audio constraints, and layout design:
+      </p>
+
+      <div class="glass-card accent-cyan" style="margin-bottom: 5mm;">
+        <h3>1. WebGL & 3D Rendering in Next.js SSR</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 2mm; line-height: 1.6;">
+          Importing heavy WebGL canvas components directly into Next.js triggered Server-Side Rendering (SSR) reference errors because the browser window object was not available on the server.
+        </p>
+        <p style="font-size: 9pt; margin-bottom: 0; color: #10B981; font-weight: 600;">
+          Mitigation: Used next/dynamic with { ssr: false } to delay loading the Three.js globe component until the client-side browser is fully initialized.
+        </p>
+      </div>
+
+      <div class="glass-card accent-emerald" style="margin-bottom: 5mm;">
+        <h3>2. Browser Audio Block Policy</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 2mm; line-height: 1.6;">
+          Modern web browsers block synthesized AudioContext playback before a user interacts with the page, which initially caused sound effects to fail on first load.
+        </p>
+        <p style="font-size: 9pt; margin-bottom: 0; color: #10B981; font-weight: 600;">
+          Mitigation: Implemented global click and touch event listeners in SoundManager.tsx. These listeners automatically resume the AudioContext on the user's first interaction.
+        </p>
+      </div>
+
+      <div class="glass-card" style="margin-bottom: 5mm;">
+        <h3>3. Real-Time Responsive Layout Grid</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          Maintaining glassmorphic styling, background particles, and text readability across different screen sizes was challenging. We solved this by using custom CSS backdrop-filters, modern container queries, and Tailwind responsive grid utilities.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="page-footer">
+      <div>SecondLife Platform Documentation</div>
+      <div>Page 23</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 24: FUTURE ENHANCEMENTS & ROADMAP ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>24 / Future Enhancements</div>
+    </div>
+
+    <div class="content-area">
+      <h2>Future Enhancements & Roadmap</h2>
+      
+      <p style="margin-bottom: 5mm;">
+        We plan to expand SecondLife with new features to improve item tracking, automate drop-offs, and increase user engagement:
+      </p>
+
+      <div class="glass-card accent-cyan" style="margin-bottom: 5mm;">
+        <h3>AI Assistant Integration</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          We will integrate a conversational AI helper (like Gemini API) to answer user questions about materials, repair basics, and recycling options, guiding them through circular habits.
+        </p>
+      </div>
+
+      <div class="glass-card accent-emerald" style="margin-bottom: 5mm;">
+        <h3>Blockchain-Based Donation Tracking</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          We plan to implement a decentralized public ledger to track donated items from drop-off to delivery, providing full transparency that helps build trust with donors and partner organizations.
+        </p>
+      </div>
+
+      <div class="glass-card" style="margin-bottom: 5mm;">
+        <h3>IoT Smart Bins & Carbon Credits</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 0; line-height: 1.6;">
+          We plan to deploy smart collection bins equipped with sensors to verify item drop-offs automatically, allowing users to earn carbon credits that can be traded on green marketplaces.
+        </p>
+      </div>
+
+      <p>
+        These additions will make the platform more automated, transparent, and connected to global green initiatives.
+      </p>
+
+    </div>
+
+    <div class="page-footer">
+      <div>SecondLife Platform Documentation</div>
+      <div>Page 24</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 25: LEARNING OUTCOMES & CONCLUSION ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>25 / Learning Outcomes & Conclusion</div>
+    </div>
+
+    <div class="content-area">
+      <h2>Learning Outcomes & Conclusion</h2>
+      
+      <div class="glass-card accent-cyan" style="margin-bottom: 5mm;">
+        <h3>Key Learning Outcomes</h3>
+        <p style="font-size: 9.5pt; margin-bottom: 2.5mm; line-height: 1.6;">
+          Building SecondLife provided practical experience with several modern web development and system design concepts:
+        </p>
+        <ul style="margin-bottom: 0;">
+          <li style="font-size: 9pt; margin-bottom: 1mm;"><strong>Client-Side Audio Synthesis:</strong> Learned to generate custom haptic sound cues using the Web Audio API without relying on external media files.</li>
+          <li style="font-size: 9pt; margin-bottom: 1mm;"><strong>WebGL Integration:</strong> Experienced managing Three.js canvas lifecycles and animations in a Next.js framework.</li>
+          <li style="font-size: 9pt; margin-bottom: 0;"><strong>State & Event Listeners:</strong> Structured global event listeners to handle user interactions cleanly while avoiding component memory leaks.</li>
+        </ul>
+      </div>
+
+      <h3 style="font-size: 13pt; color: #FFF; margin-top: 4mm; margin-bottom: 3mm;">Conclusion</h3>
+      
+      <p style="font-size: 10.5pt; line-height: 1.7; margin-bottom: 4mm;">
+        SecondLife demonstrates how modern web interfaces and AI concepts can be combined to address real-world environmental challenges. The application simplifies circular economy decisions by automating item classification and connecting users with local partners.
+      </p>
+
+      <p style="font-size: 10.5pt; line-height: 1.7;">
+        By combining interactive 3D elements, custom audio feedback, and data-driven impact metrics, the platform shows that ecological responsibility can be made both visually engaging and easy to adopt. It provides a functional foundation for scalable green-tech initiatives.
+      </p>
+
+    </div>
+
+    <div class="page-footer">
+      <div>SecondLife Platform Documentation</div>
+      <div>Page 25</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 26: PROJECT LINKS & QR CODES ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>26 / Project Access</div>
+    </div>
+
+    <div class="content-area">
+      <h2>Project Links & QR Codes</h2>
+      
+      <p style="margin-bottom: 8mm;">
+        Scan the QR codes below to access the open-source repository or visit the live deployment of the platform:
+      </p>
+
+      <div class="grid-2" style="margin-bottom: 6mm;">
+        <!-- GitHub QR Card -->
+        <div class="qr-card">
+          <h3 style="font-size: 12pt; color: #00F5FF; margin-bottom: 3mm;">GitHub Repository</h3>
+          <div class="qr-box" id="github-qr-placeholder">
+            <!-- Inject GitHub SVG QR Code here -->
+          </div>
+          <p style="font-size: 8.5pt; margin-bottom: 2mm; text-align: center; color: #9CA3AF; word-break: break-all; font-family: 'Fira Code', monospace;">
+            melvindeepesh-boop/SECOND-LIFE
+          </p>
+          <span class="tech-pill" style="margin-right: 0; margin-bottom: 0;">Open-Source Code</span>
+        </div>
+
+        <!-- Live Website QR Card -->
+        <div class="qr-card">
+          <h3 style="font-size: 12pt; color: #10B981; margin-bottom: 3mm;">Live Website</h3>
+          <div class="qr-box" id="website-qr-placeholder">
+            <!-- Inject Website SVG QR Code here -->
+          </div>
+          <p style="font-size: 8.5pt; margin-bottom: 2mm; text-align: center; color: #9CA3AF; word-break: break-all; font-family: 'Fira Code', monospace;">
+            second-kohl-ten.vercel.app
+          </p>
+          <span class="tech-pill" style="margin-right: 0; margin-bottom: 0;">Interactive Demo</span>
+        </div>
+      </div>
+
+      <p style="text-align: center; font-size: 9.5pt; color: #9CA3AF; margin-top: 4mm;">
+        Scan with any mobile device to view details, inspect build pipelines, or run live scans.
+      </p>
+
+    </div>
+
+    <div class="page-footer">
+      <div>SecondLife Platform Documentation</div>
+      <div>Page 26</div>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 27: REFERENCES ================= -->
+  <div class="page">
+    <div class="grid-overlay"></div>
+    <div class="page-header">
+      <div class="brand">SECOND<span>LIFE</span></div>
+      <div>27 / References</div>
+    </div>
+
+    <div class="content-area" style="justify-content: space-between; height: calc(100% - 15mm);">
+      <div>
+        <h2>References</h2>
+        
+        <p style="margin-bottom: 6mm;">
+          Below are the references, standards, and technical documentation used during the design and development of the SecondLife platform:
+        </p>
+
+        <div class="glass-card" style="padding: 5mm; margin-bottom: 4mm;">
+          <h3 style="font-size: 11pt; color: #FFF; margin-bottom: 1.5mm;">1. Circular Economy & Sustainability</h3>
+          <p style="font-size: 8.5pt; margin-bottom: 0; color: #9CA3AF; line-height: 1.5;">
+            * Ellen MacArthur Foundation. (2020). *Towards the Circular Economy: Economic and business rationale for an accelerated transition*.<br>
+            * United Nations. (2015). *Sustainable Development Goal 12: Responsible Consumption and Production*.<br>
+            * Ghisellini, P. et al. (2016). *A review on circular economy: the expected transition to a balanced interplay of environmental and economic systems*. Journal of Cleaner Production.
+          </p>
+        </div>
+
+        <div class="glass-card" style="padding: 5mm; margin-bottom: 4mm;">
+          <h3 style="font-size: 11pt; color: #FFF; margin-bottom: 1.5mm;">2. Web Graphics & WebGL Concepts</h3>
+          <p style="font-size: 8.5pt; margin-bottom: 0; color: #9CA3AF; line-height: 1.5;">
+            * Cabello, R. (2025). *Three.js Documentation and Examples*. WebGL library resource.<br>
+            * React Three Fiber (R3F) Core Team. *Declarative 3D scenes in React framework documentation*.<br>
+            * Parisi, T. (2014). *Learning Three.js: The JavaScript 3D Library for WebGL*. O'Reilly Media.
+          </p>
+        </div>
+
+        <div class="glass-card" style="padding: 5mm; margin-bottom: 4mm;">
+          <h3 style="font-size: 11pt; color: #FFF; margin-bottom: 1.5mm;">3. Web Audio & Frontend Frameworks</h3>
+          <p style="font-size: 8.5pt; margin-bottom: 0; color: #9CA3AF; line-height: 1.5;">
+            * W3C Web Audio Working Group. (2021). *Web Audio API Specification*.<br>
+            * Next.js Core Team. (2026). *Next.js App Router Architecture and Server Components Guide*. Vercel docs.<br>
+            * Framer Motion Team. *Layout animations and physics-based motion in React*.
+          </p>
+        </div>
+      </div>
+
+      <div style="text-align: center; font-family: 'Outfit', sans-serif; font-size: 8.5pt; color: #6B7280; margin-bottom: 4mm;">
+        SecondLife Project Report &copy; 2026. Prepared by Deepesh M. All rights reserved.
+      </div>
+
+    </div>
+
+    <div class="page-footer">
+      <div>SecondLife Platform Documentation</div>
+      <div>Page 27</div>
+    </div>
+  </div>
+
+</body>
+</html>

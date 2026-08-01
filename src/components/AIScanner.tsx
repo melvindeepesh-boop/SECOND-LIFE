@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Upload, Cpu, Navigation, ArrowRight, ShieldCheck, HelpCircle } from "lucide-react";
+import { startScanSound, stopScanSound, playSuccessSound } from "@/utils/audio";
 
 // Predefined mock items for quick scanning testing
 const DEMO_ITEMS = [
@@ -92,10 +93,18 @@ export default function AIScanner() {
   const [scanStatusText, setScanStatusText] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Clean up any running scan loop sound when unmounting
+  useEffect(() => {
+    return () => {
+      stopScanSound();
+    };
+  }, []);
+
   const startScan = (item: typeof DEMO_ITEMS[0]) => {
     setIsScanning(true);
     setScanProgress(0);
     setSelectedItemData(null);
+    startScanSound();
 
     const statuses = [
       "Uploading item to neural network...",
@@ -117,6 +126,8 @@ export default function AIScanner() {
         setTimeout(() => {
           setIsScanning(false);
           setSelectedItemData(item);
+          stopScanSound();
+          playSuccessSound();
         }, 800);
       }
     }, 600);

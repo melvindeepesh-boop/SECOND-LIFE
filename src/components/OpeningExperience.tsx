@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { playIntroSound } from "@/utils/audio";
 
 interface OpeningExperienceProps {
   onComplete: () => void;
@@ -34,6 +35,13 @@ export default function OpeningExperience({ onComplete }: OpeningExperienceProps
       clearTimeout(t4);
     };
   }, [onComplete]);
+
+  // Trigger ambient intro rise sound at step 1
+  useEffect(() => {
+    if (step === 1) {
+      playIntroSound();
+    }
+  }, [step]);
 
   // Particle background for the loading screen (lightweight canvas implementation)
   useEffect(() => {

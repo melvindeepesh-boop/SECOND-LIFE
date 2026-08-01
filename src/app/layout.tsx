@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Outfit } from "next/font/google";
 import "./globals.css";
 import CustomCursor from "@/components/CustomCursor";
+import SoundManager from "@/components/SoundManager";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,6 +48,9 @@ export default function RootLayout({
         
         {/* Custom cursor overlay */}
         <CustomCursor />
+        
+        {/* Sound manager global handler & mute toggle */}
+        <SoundManager />
         
         {children}
       </body>
